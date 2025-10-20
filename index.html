@@ -216,8 +216,8 @@
             </header>
             
             <div class="mb-6 text-center">
-                <h3 class="text-lg font-semibold color-secondary mb-1">Log in with API Key & Password</h3>
-                <p class="text-sm text-gray-400">Please enter your **API Key** and **Password** to use the application.</p>
+                <h3 class="text-lg font-semibold color-secondary mb-1">Log in with API Key</h3>
+                <p class="text-sm text-gray-400">Please enter your **API Key** to use the application.</p>
             </div>
 
             <form id="login-form" class="space-y-4">
@@ -226,24 +226,8 @@
                     <label for="apiKey" class="block text-sm font-medium mb-1">Gemini API Key</label>
                     <input type="text" id="apiKey" name="apiKey" class="login-input-field w-full" placeholder="Enter API Key" required>
                 </div>
-                <!-- Password Input -->
-                <div class="relative">
-                    <label for="password" class="block text-sm font-medium mb-1">Password</label>
-                    <input type="password" id="password" name="password" class="login-input-field w-full pr-10" placeholder="Enter Password" required>
-                    <!-- Eye icon to toggle password visibility (pure Tailwind/JS) -->
-                    <button type="button" id="togglePassword" class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center px-0 text-gray-400 hover:text-white transition">
-                        <svg id="eye-open" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        <svg id="eye-closed" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.564-3.323l.18.18A3.003 3.003 0 0012 12a3 3 0 00-3-3l-.22.22A9.95 9.95 0 012.458 12C3.732 16.057 7.523 19 12 19c.994 0 1.956-.165 2.875-.475z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 14a2 2 0 100-4 2 2 0 000 4z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.88 5.42a10.035 10.035 0 002.66 2.502l-.18-.18c-1.274-4.057-5.064-7-9.542-7a10.035 10.035 0 00-2.66 2.502" />
-                        </svg>
-                    </button>
-                </div>
-
+                <!-- REMOVED: Password Input Field and Toggle -->
+                
                 <div id="login-message" class="text-sm text-center text-red-400 hidden"></div>
                 
                 <button type="submit" class="login-button w-full">Log In</button>
@@ -310,7 +294,7 @@
             <!-- Property Type Button Group (Now in its own full-width row after Project Name/Developer) -->
             <div class="button-group pt-2">
                 <label class="block text-sm font-medium mb-2">Property Type</label>
-                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 text-sm"> <!-- Increased gap for visual clarity -->
+                <div class="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-5 text-sm"> <!-- Increased gap for visual clarity -->
                     <!-- Property Type Radios -->
                     <input type="radio" id="condo" name="propertyType" value="ကွန်ဒို" class="hidden" checked>
                     <label for="condo" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Condo</label>
@@ -655,8 +639,7 @@
             // --- LOGIN CONSTANTS (DUMMY AUTH) ---
             // NEW: Local storage key for persistence
             const STORAGE_KEY = 'geminiApiKey';
-            const VALID_API_KEY = null; 
-            const VALID_PASSWORD = "digimetric@reAd"; 
+            // REMOVED: VALID_PASSWORD constant
             
             // Global variable to store the user-provided API key for network calls
             window.apiKeyOverride = ""; 
@@ -666,21 +649,10 @@
             const loginForm = document.getElementById('login-form');
             const appContainer = document.getElementById('app-container');
             const loginMessage = document.getElementById('login-message');
-            const passwordInput = document.getElementById('password');
-            const togglePasswordButton = document.getElementById('togglePassword');
-            const eyeOpenIcon = document.getElementById('eye-open');
-            const eyeClosedIcon = document.getElementById('eye-closed');
+            // REMOVED: passwordInput, togglePasswordButton, eyeOpenIcon, eyeClosedIcon references
             const logoutButton = document.getElementById('logout-button');
 
-            // Toggle password visibility logic
-            if (togglePasswordButton) {
-                togglePasswordButton.addEventListener('click', () => {
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-                    eyeOpenIcon.classList.toggle('hidden');
-                    eyeClosedIcon.classList.toggle('hidden');
-                });
-            }
+            // REMOVED: Toggle password visibility logic
             
             function showApp() {
                 // Ensure login overlay is hidden.
@@ -703,7 +675,7 @@
 
                 // 3. Clear login form inputs for security/privacy
                 document.getElementById('apiKey').value = '';
-                document.getElementById('password').value = '';
+                // REMOVED: document.getElementById('password').value = '';
                 loginMessage.textContent = '';
                 loginMessage.classList.add('hidden');
                 
@@ -721,30 +693,22 @@
                 logoutButton.addEventListener('click', handleLogout);
             }
 
-            // --- NEW: INITIAL LOAD CHECK FOR PERSISTENCE ---
+            // --- NEW: INITIAL LOAD CHECK FOR PERSISTENCE (FIXED) ---
             if (window.authenticateFirebase) {
                 window.addEventListener('load', async () => {
                     const storedApiKey = localStorage.getItem(STORAGE_KEY);
                     
+                    // 1. Always try to authenticate Firebase (mandatory environment setup)
+                    await window.authenticateFirebase();
+                    
                     if (storedApiKey) {
                         window.apiKeyOverride = storedApiKey;
-                        
-                        // Try to authenticate silently
-                        const authReady = await window.authenticateFirebase();
-                        
-                        if (authReady && window.auth && window.auth.currentUser) {
-                            console.log("Found stored API key. Automatic sign-in successful. Showing app.");
-                            showApp();
-                            return; // Stop here, app is shown
-                        } else {
-                            // Auth failed with stored key (e.g., token expired), force relogin
-                            console.log("Stored API key found but authentication failed. Forcing re-login.");
-                            localStorage.removeItem(STORAGE_KEY);
-                            window.apiKeyOverride = "";
-                        }
+                        console.log("Found stored API key. Showing app directly.");
+                        showApp();
+                        return; // Stop here, app is shown
                     }
                     
-                    // If not automatically signed in, show the login screen.
+                    // 2. If no key found, ensure the login screen is visible.
                     loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
                 });
             }
@@ -757,7 +721,7 @@
                     e.preventDefault();
                     
                     const apiKey = document.getElementById('apiKey').value.trim();
-                    const password = document.getElementById('password').value.trim();
+                    // REMOVED: const password = document.getElementById('password').value.trim();
                     const loginButton = loginForm.querySelector('.login-button');
                     
                     loginMessage.textContent = '';
@@ -766,7 +730,7 @@
                     loginButton.textContent = 'Verifying...';
 
                     // --- AUTH CHECK ---
-                    // 1. Check if API Key and Password are provided/correct
+                    // 1. Check if API Key is provided
                     if (!apiKey) {
                         loginMessage.textContent = 'API Key is required.';
                         loginMessage.classList.remove('hidden');
@@ -775,19 +739,11 @@
                         return;
                     }
                     
-                    if (password !== VALID_PASSWORD) {
-                        loginMessage.textContent = 'Invalid Password.';
-                        loginMessage.classList.remove('hidden');
-                        loginButton.disabled = false;
-                        loginButton.textContent = 'Log In';
-                        return;
-                    }
-
-                    // 2. If valid, store the user's API Key and proceed with Firebase sign-in
+                    // 2. If valid (API Key is present), store the user's API Key and proceed with Firebase sign-in
                     window.apiKeyOverride = apiKey;
 
                     try {
-                        console.log("Login successful locally. Attempting Firebase auth...");
+                        console.log("Login successful locally (API Key check passed). Attempting Firebase auth...");
                         
                         // Call the authenticateFirebase function again to ensure session context is established
                         const authSuccess = await window.authenticateFirebase();
