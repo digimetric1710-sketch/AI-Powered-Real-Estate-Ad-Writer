@@ -1,0 +1,1415 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Real Estate Ad Writer</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for custom colors and font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0c0c; /* Very Dark Background (Deeper Black) */
+            color: #e5e5e5; /* Light Gray/Near White text */
+        }
+        
+        /* --- NEW MONOCHROME GREEN PALETTE (#00b894) --- */
+        /* Define the Primary Accent Color (Mint Green/Teal) */
+        .color-accent {
+            color: #00b894; 
+        }
+        /* Secondary color is now a lighter shade of the primary color for contrast */
+        .color-secondary {
+            color: #38c7ac; /* Lighter Green */
+        }
+
+
+        .input-field, select {
+            background-color: #151515; 
+            border: 1px solid #333333;
+            color: #e5e5e5;
+            border-radius: 0.75rem; 
+            padding: 0.75rem 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .input-field:focus {
+            border-color: #00b894; /* Green focus highlight */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.4), inset 0 1px 3px rgba(0, 0, 0, 0.6); 
+        }
+        
+        /* Style for radio buttons AND the new checkbox toggles */
+        .button-group input[type="radio"]:checked + label,
+        .button-group input[type="checkbox"]:checked + label { 
+            background-color: #00b894; /* Green for selected button */
+            border-color: #00b894;
+            color: #1a1a1a;
+            font-weight: 600;
+            box-shadow: 0 4px 10px rgba(0, 184, 148, 0.4);
+        }
+        .button-group label {
+            border: 1px solid #444444;
+            transition: all 0.2s;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 0.5rem;
+            background-color: #222222;
+        }
+        .button-group label:hover {
+            border-color: #00b894;
+        }
+        
+        /* Custom Generate Button Gradient (Primary Green Accent) */
+        #generate-button {
+            background: linear-gradient(145deg, #38c7ac 0%, #00b894 100%);
+            color: #000000; /* Pure Black text for contrast */
+            box-shadow: 0 6px 15px rgba(0, 184, 148, 0.6);
+            transition: all 0.3s ease;
+        }
+        #generate-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.9);
+        }
+
+
+        /* Output Area Styling */
+        #output-area {
+            background-color: #151515;
+            border: 1px solid #333333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        }
+
+
+        /* Enhancement Button Colors (Primary/Secondary Green Shades) */
+        .bg-enhancement-primary {
+            background-color: #00b894; /* Darker Green for Primary Enhancement */
+            color: #1a1a1a;
+        }
+        .hover-bg-enhancement-primary:hover {
+            background-color: #38c7ac;
+        }
+        .bg-enhancement-translated {
+            background-color: #38c7ac; /* Lighter Green for Translated Enhancement */
+            color: #1a1a1a;
+        }
+        .hover-bg-enhancement-translated:hover {
+            background-color: #61f2d5;
+            color: #1a1a1a;
+        }
+        
+        /* --- NEW BUTTON STYLING FOR COPY/REGENERATE (Green Focused) --- */
+        .bg-output-control {
+            background-color: #00b894;
+            color: #1a1a1a;
+        }
+        .hover-bg-output-control:hover {
+            background-color: #38c7ac;
+        }
+        
+        .bg-output-control-secondary {
+            background-color: #38c7ac;
+            color: #1a1a1a;
+        }
+        .hover-bg-output-control-secondary:hover {
+            background-color: #61f2d5;
+        }
+        /* --- END NEW BUTTON STYLING --- */
+
+
+
+
+        /* Custom Modal Styles */
+        .modal-content {
+            background-color: #1a1a1a;
+        }
+        /* Loading Spinner Color */
+        .loading-color {
+            color: #00b894; /* Primary Green for loading spinner */
+        }
+    </style>
+</head>
+<body>
+
+
+
+
+    <div class="max-w-4xl mx-auto p-6 md:p-10">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold mb-1 color-accent">Digimetric</h1>
+            <!-- AI-Powered Real Estate AdWriter title is now large, bold, and green -->
+            <h2 class="text-2xl font-bold color-secondary tracking-wider">AI-Powered Real Estate AdWriter</h2>
+        </header>
+
+
+
+
+        <!-- Main Form Container -->
+        <form id="ad-writer-form" class="space-y-8">
+            <!-- Section 1: Top Inputs -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name of Real Estate -->
+                <div>
+                    <label for="realEstateName" class="block text-sm font-medium mb-2">Your Real Estate Name</label>
+                    <input type="text" id="realEstateName" name="realEstateName" class="input-field w-full" placeholder="(e.g., Siam Real Estate)">
+                </div>
+                <!-- Target Audience -->
+                <div>
+                    <label for="targetAudience" class="block text-sm font-medium mb-2">Target Audience</label>
+                    <input type="text" id="targetAudience" name="targetAudience" class="input-field w-full" placeholder="(e.g., Investors, Business Owners, Families....)">
+                </div>
+            </div>
+
+
+
+
+            <!-- Project Information Section Title -->
+            <h3 class="text-2xl font-bold color-accent pt-4 border-b border-gray-700 pb-2">Project Information</h3>
+
+
+
+
+            <!-- Section 2: Project Details (Layout modified to move Property Type below Project Name input field) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Project Name (Left Column) -->
+                <div>
+                    <label for="projectName" class="block text-sm font-medium mb-2">Project Name</label>
+                    <input type="text" id="projectName" name="projectName" class="input-field w-full" placeholder="(e.g., XT Phayathai)">
+                </div>
+                <!-- Developer Name (Right Column) - Moved up to align with Project Name -->
+                <div>
+                    <label for="developerName" class="block text-sm font-medium mb-2">Developer Name</label>
+                    <input type="text" id="developerName" name="developerName" class="input-field w-full" placeholder="(e.g., Sansiri)">
+                </div>
+            </div>
+            
+            <!-- Property Type Button Group (Now in its own full-width row after Project Name/Developer) -->
+            <div class="button-group pt-2">
+                <label class="block text-sm font-medium mb-2">Property Type</label>
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 text-sm"> <!-- Increased gap for visual clarity -->
+                    <!-- Property Type Radios -->
+                    <input type="radio" id="condo" name="propertyType" value="ကွန်ဒို" class="hidden" checked>
+                    <label for="condo" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Condo</label>
+                    
+                    <input type="radio" id="apartment" name="propertyType" value="တိုက်ခန်း" class="hidden">
+                    <label for="apartment" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Apartment</label>
+                    
+                    <input type="radio" id="townhouse" name="propertyType" value="မြို့တွင်းအိမ်" class="hidden">
+                    <label for="townhouse" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Townhouse</label>
+                    
+                    <input type="radio" id="land" name="propertyType" value="မြေကွက်" class="hidden">
+                    <label for="land" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Land</label>
+                    
+                    <input type="radio" id="office" name="propertyType" value="ရုံးခန်းနေရာ" class="hidden">
+                    <label for="office" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Office Space</label>
+                </div>
+            </div>
+
+
+            <!-- Remaining Project Details (Start a new grid section) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4"> 
+                <!-- Highlight Location -->
+                <div>
+                    <label for="highlightLocation" class="block text-sm font-medium mb-2">Highlight Location</label>
+                    <input type="text" id="highlightLocation" name="highlightLocation" class="input-field w-full" placeholder="(e.g., Near BTS Phayathai)">
+                </div>
+
+
+
+
+                <!-- Size / Rooms -->
+                <div>
+                    <label for="sizeRooms" class="block text-sm font-medium mb-2">Size / Rooms</label>
+                    <input type="text" id="sizeRooms" name="sizeRooms" class="input-field w-full" placeholder="(e.g., 45 sq.m, 2 Bedrooms)">
+                </div>
+                 <!-- Facilities / Features -->
+                 <div>
+                    <label for="facilities" class="block text-sm font-medium mb-2">Facilities / Features</label>
+                    <input type="text" id="facilities" name="facilities" class="input-field w-full" placeholder="(e.g., Gym, Pool, Co-working Space)">
+                </div>
+
+
+
+
+                <!-- Price Information -->
+                <div>
+                    <label for="priceInfo" class="block text-sm font-medium mb-2">Price Information</label>
+                    <input type="text" id="priceInfo" name="priceInfo" class="input-field w-full" placeholder="(e.g., Starting from 6,500,000 Baht)">
+                </div>
+                 <!-- Selling Point (Highlight) -->
+                 <div>
+                    <label for="sellingPoint" class="block text-sm font-medium mb-2">Selling Point (Highlight)</label>
+                    <input type="text" id="sellingPoint" name="sellingPoint" class="input-field w-full" placeholder="(e.g., 3-minute walk to BTS Phayathai)">
+                </div>
+            </div>
+
+
+
+
+            <!-- Section 3: Language & Tone (Stays stacked vertically) -->
+            <div class="space-y-8 pt-4"> 
+                <!-- Language Option Button Group -->
+                <div class="button-group">
+                    <label class="block text-sm font-medium mb-2">Language Option</label>
+                    <div class="grid grid-cols-3 gap-2 text-sm">
+                        <!-- Language Radios -->
+                        <input type="radio" id="lang-my" name="languageOption" value="မြန်မာ" class="hidden" checked>
+                        <label for="lang-my" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Burmese</label>
+                        
+                        <input type="radio" id="lang-en" name="languageOption" value="အင်္ဂလိပ်" class="hidden">
+                        <label for="lang-en" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">English</label>
+                        
+                        <input type="radio" id="lang-th" name="languageOption" value="ထိုင်း" class="hidden">
+                        <label for="lang-th" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Thai</label>
+                        
+                        <input type="radio" id="lang-ch" name="languageOption" value="တရုတ်" class="hidden">
+                        <label for="lang-ch" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Chinese</label>
+                        
+                        <input type="radio" id="lang-jp" name="languageOption" value="ဂျပန်" class="hidden">
+                        <label for="lang-jp" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Japanese</label>
+                        
+                        <input type="radio" id="lang-ko" name="languageOption" value="ကိုရီးယား" class="hidden">
+                        <label for="lang-ko" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Korean</label>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Tone of Voice Button Group -->
+                <div class="button-group">
+                    <label class="block text-sm font-medium mb-2">Tone of Voice</label>
+                    <div class="grid grid-cols-4 gap-2 text-sm">
+                        <!-- Tone Radios -->
+                        <input type="radio" id="tone-sales" name="toneOfVoice" value="ရောင်းအားမြှင့်" class="hidden" checked>
+                        <label for="tone-sales" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Sales</label>
+                        
+                        <input type="radio" id="tone-luxury" name="toneOfVoice" value="ခမ်းနားထည်ဝါ" class="hidden">
+                        <label for="tone-luxury" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Luxury</label>
+
+
+
+
+                        <input type="radio" id="tone-pro" name="toneOfVoice" value="ကျွမ်းကျင်ပညာရှင်ဆန်" class="hidden">
+                        <label for="tone-pro" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Professional</label>
+                        
+                        <input type="radio" id="tone-friendly" name="toneOfVoice" value="ဖော်ရွေပျူငှာ" class="hidden">
+                        <label for="tone-friendly" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Friendly</label>
+                        
+                        <input type="radio" id="tone-urgent" name="toneOfVoice" value="အရေးတကြီး" class="hidden">
+                        <label for="tone-urgent" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Urgent</label>
+                        
+                        <input type="radio" id="tone-elegant" name="toneOfVoice" value="နူးညံ့လှပ" class="hidden">
+                        <label for="tone-elegant" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Elegant</label>
+                        
+                        <input type="radio" id="tone-consultant" name="toneOfVoice" value="အကြံပေးပညာရှင်" class="hidden">
+                        <label for="tone-consultant" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Consultant</label>
+                        
+                        <input type="radio" id="tone-biz" name="toneOfVoice" value="စီးပွားရေးရှုထောင့်" class="hidden">
+                        <label for="tone-biz" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Business Perspective</label>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <!-- Section 4: Conditional -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
+                <!-- Conditional Button Group (Takes full width on MD screens) -->
+                <div class="button-group md:col-span-3">
+                    <label class="block text-sm font-medium mb-2">Condition</label>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <!-- Conditional Radios -->
+                        <input type="radio" id="cond-ready" name="conditional" value="ချက်ချင်းပြောင်းရွှေ့နေထိုင်နိုင်" class="hidden" checked>
+                        <label for="cond-ready" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Ready to Move In</label>
+                        
+                        <input type="radio" id="cond-under" name="conditional" value="ဆောက်လုပ်ဆဲ (ပုံစံအရောင်း)" class="hidden">
+                        <label for="cond-under" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Under Construction (Off-Plan)</label>
+                        
+                        <input type="radio" id="cond-new" name="conditional" value="စီမံကိန်းအသစ်" class="hidden">
+                        <label for="cond-new" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">New Project</label>
+                    </div>
+                </div>
+                <!-- Reference URL and File Upload inputs were here and are now removed -->
+            </div>
+
+
+
+
+            <!-- Section 5: Output Level (Word limits removed from label, kept in value) -->
+            <div class="button-group pt-4">
+                <label class="block text-sm font-medium mb-2">Select Output Level</label>
+                <div class="grid grid-cols-5 gap-3 text-sm">
+                    <!-- Output Level Radios -->
+                    <input type="radio" id="level-short" name="outputLevel" value="အတိုချုပ် (Short) - World Limit 200" class="hidden" checked>
+                    <label for="level-short" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Short</label>
+                    
+                    <input type="radio" id="level-medium" name="outputLevel" value="အလယ်အလတ် (Medium) - World Limit 320" class="hidden">
+                    <label for="level-medium" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Medium</label>
+                    
+                    <input type="radio" id="level-long" name="outputLevel" value="အရှည် (Long) - World Limit 400" class="hidden">
+                    <label for="level-long" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Long</label>
+                    
+                    <input type="radio" id="level-extended" name="outputLevel" value="ကျယ်ကျယ်ပြန့်ပြန့် (Extended) - World Limit 550" class="hidden">
+                    <label for="level-extended" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Extended</label>
+                    
+                    <input type="radio" id="level-comprehensive" name="outputLevel" value="ပြည့်စုံလုံလောက် (Comprehensive) - World Limit 750" class="hidden">
+                    <label for="level-comprehensive" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Comprehensive</label>
+                </div>
+            </div>
+
+
+
+
+            <!-- Section 6: Generate Button and Toggles -->
+            <div class="flex justify-center items-stretch gap-4 pt-8">
+                <!-- Toggle 1: Emoji -->
+                <div class="button-group w-1/5 max-w-[80px]">
+                    <input type="checkbox" id="toggle-emoji" name="toggleEmoji" class="hidden" checked>
+                    <label for="toggle-emoji" class="py-3 px-3 rounded-xl border-gray-600 text-3xl transition duration-150 flex items-center justify-center h-full hover:bg-[#3d3d3d]">😊</label>
+                </div>
+
+
+
+
+                <!-- Toggle 2: Hash Tag -->
+                <div class="button-group w-1/5 max-w-[80px]">
+                    <input type="checkbox" id="toggle-hash" name="toggleHash" class="hidden" checked>
+                    <label for="toggle-hash" class="py-3 px-3 rounded-xl border-gray-600 text-3xl font-mono transition duration-150 flex items-center justify-center h-full hover:bg-[#3d3d3d]">#</label>
+                </div>
+
+
+
+
+                <!-- Generate Content Button (Wider) -->
+                <button type="submit" id="generate-button" class="flex-grow py-4 text-lg font-bold rounded-xl hover:opacity-90 transition duration-150">
+                    Generate Content
+                </button>
+            </div>
+
+
+
+
+        </form>
+
+
+
+
+        <!-- Output Area (Hidden initially) -->
+        <div id="output-area" class="mt-12 p-6 rounded-xl bg-gray-800 hidden">
+            <h3 class="text-xl font-bold mb-4 color-accent">Generated Content</h3>
+            <div id="loading-spinner" class="text-center p-8 hidden">
+                <svg class="animate-spin h-8 w-8 loading-color mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-2 text-gray-400">AI is generating content. Please wait...</p>
+            </div>
+            <div id="generated-content" class="whitespace-pre-wrap text-gray-200"></div>
+
+
+
+
+            <!-- Primary Output Controls (Copy & Regenerate) -->
+            <div id="output-controls-primary" class="flex flex-wrap justify-start gap-4 mt-4 pt-4 border-t border-gray-700">
+                <!-- Copy Button for Generated Content (Changed to Green Theme) -->
+                <button id="copy-content-btn" class="bg-output-control hover-bg-output-control text-black font-medium py-2 px-4 rounded-lg flex items-center transition duration-150" data-base-class="bg-output-control hover-bg-output-control text-black">
+                    <!-- Icon: Copy -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>
+                    Copy Content
+                </button>
+                <!-- Regenerate Button (Changed to Secondary Green Theme) -->
+                <button id="regenerate-content-btn" class="bg-output-control-secondary hover-bg-output-control-secondary text-black font-medium py-2 px-4 rounded-lg flex items-center transition duration-150" data-base-class="bg-output-control-secondary hover-bg-output-control-secondary text-black">
+                    <!-- Icon: Refresh (🔄) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 20v-4h-4"/>
+                        <path d="M4 4v4h4"/>
+                        <path d="M16 4a8 8 0 0 0-6.9 3.9"/>
+                        <path d="M20 12h-4"/>
+                        <path d="M8 12h-4"/>
+                        <path d="M4 16a8 8 0 0 0 6.9 3.9"/>
+                    </svg>
+                    Regenerate Content
+                </button>
+            </div>
+
+
+
+
+            <!-- PRIMARY Content Enhancement Section (Uses Generated Content) -->
+            <div id="enhancement-section" class="mt-8 pt-4 border-t border-gray-700">
+                <h4 class="text-lg font-bold mb-3 color-accent">Content Enhancement</h4> <!-- (မူရင်း) removed -->
+                <div class="flex flex-wrap justify-start gap-4">
+                    <button id="ad-caption-btn" data-type="caption" class="enhancement-btn bg-enhancement-primary hover-bg-enhancement-primary text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                        AD Caption
+                    </button>
+                    <button id="ad-headline-btn" data-type="headline" class="enhancement-btn bg-enhancement-primary hover-bg-enhancement-primary text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                        AD Headline
+                    </button>
+                    <button id="ad-hashtag-btn" data-type="hashtag" class="enhancement-btn bg-enhancement-primary hover-bg-enhancement-primary text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                        AD Hashtag
+                    </button>
+                </div>
+            </div>
+            <!-- END PRIMARY Content Enhancement Section -->
+            
+            <!-- Auto Translate Section -->
+            <div id="translate-section" class="mt-8 pt-4 border-t border-gray-700">
+                <h4 class="text-lg font-bold mb-3 color-accent">Auto Translate Content</h4>
+                <!-- Translate Language Options -->
+                <div class="button-group">
+                    <label class="block text-sm font-medium mb-2">Select Target Language</label>
+                    <div id="translate-language-options" class="grid grid-cols-3 md:grid-cols-6 gap-2 text-sm">
+                        <!-- Translation Radios (FIXED: ID and 'for' attribute mismatch) -->
+                        <input type="radio" id="translate-my" name="translateLanguage" value="မြန်မာ" class="hidden">
+                        <label for="translate-my" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Burmese</label>
+                        
+                        <input type="radio" id="translate-en" name="translateLanguage" value="အင်္ဂလိပ်" class="hidden">
+                        <label for="translate-en" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">English</label>
+                        
+                        <input type="radio" id="translate-th" name="translateLanguage" value="ထိုင်း" class="hidden">
+                        <label for="translate-th" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Thai</label>
+                        
+                        <input type="radio" id="translate-ch" name="translateLanguage" value="တရုတ်" class="hidden">
+                        <label for="translate-ch" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Chinese</label>
+                        
+                        <input type="radio" id="translate-jp" name="translateLanguage" value="ဂျပန်" class="hidden">
+                        <label for="translate-jp" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Japanese</label>
+                        
+                        <input type="radio" id="translate-ko" name="translateLanguage" value="ကိုရီးယား" class="hidden">
+                        <label for="translate-ko" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Korean</label>
+                    </div>
+                </div>
+
+
+
+
+                <!-- Translated Content Output Area -->
+                <div id="translated-output-area" class="mt-6 p-4 rounded-lg bg-gray-700 hidden">
+                    <div id="translation-loading-spinner" class="text-center p-4 hidden">
+                        <svg class="animate-spin h-5 w-5 loading-color mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="mt-2 text-gray-300 text-sm">Translating...</p>
+                    </div>
+                    <div id="translated-content" class="whitespace-pre-wrap text-gray-100"></div>
+                    <!-- Copy Button for Translated Content (Changed to Green Theme) -->
+                    <button id="copy-translated-btn" class="mt-3 bg-output-control hover-bg-output-control text-black font-medium py-2 px-4 rounded-lg flex items-center transition duration-150" data-base-class="bg-output-control hover-bg-output-control text-black">
+                        <!-- Icon: Copy -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>
+                        Copy Translation
+                    </button>
+                </div>
+                
+                <!-- TRANSLATED Content Enhancement Section (Uses Translated Content) -->
+                <div id="translated-enhancement-section" class="mt-8 pt-4 border-t border-gray-600 hidden">
+                    <!-- Title updated to reflect Burmese label for 'Translated' -->
+                    <h4 class="text-lg font-bold mb-3 color-secondary">Content Enhancement</h4> <!-- (ဘာသာပြန်) removed -->
+                    <div class="flex flex-wrap justify-start gap-4">
+                        <button id="translated-ad-caption-btn" data-type="caption" class="translated-enhancement-btn bg-enhancement-translated hover-bg-enhancement-translated text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                            AD Caption
+                        </button>
+                        <button id="translated-ad-headline-btn" data-type="headline" class="translated-enhancement-btn bg-enhancement-translated hover-bg-enhancement-translated text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                            AD Headline
+                        </button>
+                        <button id="translated-ad-hashtag-btn" data-type="hashtag" class="translated-enhancement-btn bg-enhancement-translated hover-bg-enhancement-translated text-black font-medium py-2 px-4 rounded-lg transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                            AD Hashtag
+                        </button>
+                    </div>
+                </div>
+                <!-- END TRANSLATED Content Enhancement Section -->
+
+
+
+
+            </div>
+
+
+
+
+            <div id="sources-area" class="mt-4 pt-4 border-t border-gray-700 text-sm text-gray-500 hidden">
+                <p class="font-medium text-gray-400">Sources:</p>
+                <ul id="source-list" class="list-disc pl-5 mt-1"></ul>
+            </div>
+        </div>
+        <!-- End Output Area -->
+    </div>
+
+
+
+
+    <!-- Modal for Captions/Headlines/Hashtags -->
+    <div id="enhancement-modal" class="modal fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none">
+        <div class="modal-content bg-gray-900 w-full max-w-xl max-h-[80vh] rounded-xl shadow-2xl p-6 overflow-y-auto">
+            <div class="flex justify-between items-start border-b border-gray-700 pb-3 mb-4 sticky top-0 bg-gray-900 z-10">
+                <h2 id="modal-title" class="text-2xl font-bold color-accent"></h2>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white transition duration-150">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <div id="modal-loading-spinner" class="text-center p-8 hidden">
+                <svg class="animate-spin h-8 w-8 loading-color mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p class="mt-2 text-gray-400">Generating ideas...</p>
+            </div>
+            <ul id="modal-list-content" class="space-y-4">
+                <!-- Content will be injected here -->
+            </ul>
+        </div>
+    </div>
+    <!-- End Modal -->
+
+
+
+
+    <script>
+        const form = document.getElementById('ad-writer-form');
+        const outputArea = document.getElementById('output-area');
+        const generatedContent = document.getElementById('generated-content');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const generateButton = document.getElementById('generate-button');
+        // REMOVED: const fileUploadInput = document.getElementById('fileUpload');
+        // REMOVED: const fileUploadText = document.getElementById('file-upload-text');
+
+
+
+
+        const copyContentBtn = document.getElementById('copy-content-btn');
+        const regenerateContentBtn = document.getElementById('regenerate-content-btn');
+        const translateLanguageOptions = document.getElementById('translate-language-options');
+        const translatedOutputArea = document.getElementById('translated-output-area');
+        const translatedContent = document.getElementById('translated-content');
+        const copyTranslatedBtn = document.getElementById('copy-translated-btn');
+        const translationLoadingSpinner = document.getElementById('translation-loading-spinner');
+        
+        // Modal and Enhancement Elements
+        const enhancementModal = document.getElementById('enhancement-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalTitle = document.getElementById('modal-title');
+        const modalListContent = document.getElementById('modal-list-content');
+        const modalLoadingSpinner = document.getElementById('modal-loading-spinner');
+        // Select all primary enhancement buttons
+        const enhancementBtns = document.querySelectorAll('.enhancement-btn');
+        
+        // NEW: Select elements for translated enhancement
+        const translatedEnhancementSection = document.getElementById('translated-enhancement-section');
+        const translatedEnhancementBtns = document.querySelectorAll('.translated-enhancement-btn');
+
+
+
+
+        const WORD_LIMITS = {
+            "အတိုချုပ် (Short) - World Limit 200": 200,
+            "အလယ်အလတ် (Medium) - World Limit 320": 320,
+            "အရှည် (Long) - World Limit 400": 400,
+            "ကျယ်ကျယ်ပြန့်ပြန့် (Extended) - World Limit 550": 550,
+            "ပြည့်စုံလုံလောက် (Comprehensive) - World Limit 750": 750
+        };
+
+
+
+
+        const TONE_INSTRUCTIONS = {
+            // Tone instructions remain the same for AI persona setting
+            "ရောင်းအားမြှင့်": { style: "ဆွဲဆောင်မှုအားကောင်းပြီး တွန်းအားပေးသောလေသံ (Aggressive and Pushy Tone)။ အကျိုးကျေးဇူးများကို အဓိကထားပြီး ချက်ချင်းဆောင်ရွက်ရန် တိုက်တွန်းသည့်စကားလုံးများ ('အခွင့်အရေးလက်မလွတ်စေနဲ့'၊ 'ချက်ချင်းဖုန်းဆက်ပါ') ကို အသုံးပြုပါ။", focus: "Benefits, Urgency, Call-to-Action. Use persuasive adjectives like 'must-have', 'unbeatable', 'fastest-selling'." },
+            "ခမ်းနားထည်ဝါ": { style: "အလွန်အဆင့်မြင့်ပြီး သီးသန့်ဆန်သော ခံစားချက်ကိုပေးသည့် လေသံ (Highly exclusive and sophisticated tone)။ သက်တောင့်သက်သာရှိမှု၊ အနုစိတ်မှုနှင့် လူနေမှုအဆင့်အတန်းမြင့်မားမှုကို ဖော်ပြပါ။", focus: "Exclusivity, Sophistication, High-end materials, Aspirational lifestyle. Use rich vocabulary (e.g., 'A sanctuary of luxury', 'meticulously crafted', 'bespoke experience')." },
+            "ကျွမ်းကျင်ပညာရှင်ဆန်": { style: "ကြားနေပြီး ယုံကြည်စိတ်ချရသော အချက်အလက်များကို အခြေခံသော လေသံ (Neutral and authoritative, data-driven tone)။ ပိုင်ဆိုင်မှုအသေးစိတ်၊ တည်နေရာအချက်အလက်နှင့် ရင်းနှီးမြှုပ်နှံမှုတန်ဖိုးကို ရှင်းလင်းတိကျစွာ ဖော်ပြပါ။", focus: "Facts, Investment potential, Clear structure, Formal language. Use objective terms (e.g., 'Proven track record', 'Strategic location', 'market analysis suggests')." },
+            "ဖော်ရွေပျူငှာ": { style: "နွေးထွေးပြီး ဖိတ်ခေါ်သော၊ စကားပြောဆိုမှုပုံစံ လေသံ (Warm, inviting, and conversational tone)။ အသိုင်းအဝိုင်း၊ မိသားစုအဆင်ပြေမှုနှင့် အိမ်မှာရှိသလို ခံစားရမှုကို အဓိကထားဖော်ပြပါ။", focus: "Community, Comfort, Hospitality, Relatable situations. Use contractions and a welcoming voice (e.g., 'Imagine yourself here', 'we think you'll love it')." },
+            "အရေးတကြီး": { style: "ချက်ချင်းဆောင်ရွက်ရန် တိုက်တွန်းသည့်၊ ပြတ်သားသော လေသံ (Direct, firm, and scarcity-driven tone)။ အချိန်အကန့်အသတ်ရှိသော ကမ်းလှမ်းမှုများ၊ လက်ကျန်နည်းပါးမှုနှင့် ချက်ချင်းဝယ်ယူရမည့် အကြောင်းရင်းများကို အလေးပေးဖော်ပြပါ။", focus: "Scarcity, Limited availability, Deadlines, Immediate Call-to-Action. Use words like 'Only a few left', 'Must act now', 'Final notice', 'Don't miss out'." },
+            "နူးညံ့လှပ": { style: "စိတ်ခံစားမှုနှင့် အနုပညာဆန်သော စကားလုံးများဖြင့် ရေးသားသော နူးညံ့သိမ်မွေ့သည့် လေသံ (Poetic, evocative, and graceful tone)။ အလှအပ၊ စိတ်တည်ငြိမ်မှုနှင့် သဘာဝပတ်ဝန်းကျင်ကို ပုံဖော်ဖော်ပြပါ။", focus: "Aesthetics, Tranquility, Refined taste, Descriptive sensory language. Use soft, evocative language (e.g., 'Whispers of dawn', 'A canvas of serenity', 'harmonious design')." },
+            "အကြံပေးပညာရှင်": { style: "ကျွမ်းကျင်သူကဲ့သို့ သုံးသပ်ပြီး၊ သင့်တော်သော အကြံဉာဏ်များပေးသည့် လေသံ (Advisory, analytical, and expert opinion tone)။ ဝယ်ယူသူ၏ လိုအပ်ချက်နှင့် စျေးကွက်အခြေအနေကို ချိတ်ဆက်ကာ အသင့်တော်ဆုံးဖြေရှင်းချက်ကို ဖော်ပြပါ။", focus: "Market analysis, Personalized advice, Problem-solving. Use phrases like 'We recommend this due to...', 'Considering your goals...', 'Our analysis shows this is ideal...'." },
+            "စီးပွားရေးရှုထောင့်": { style: "ရင်းနှီးမြှုပ်နှံမှုနှင့် ငွေကြေးဆိုင်ရာ အကျိုးအမြတ်များကို အဓိကထားသည့် လေသံ (Financial, strategic, and ROI-focused tone)။ ဝင်ငွေ၊ အမြတ်အစွန်းနှင့် စီးပွားရေးအခွင့်အလမ်းများကို ဂဏန်းအချက်အလက်များဖြင့် တွဲဖက်ဖော်ပြပါ။", focus: "ROI, Rental Yield, Capital Appreciation, Strategic acquisition. Use financial terminology (e.g., 'High potential for growth', 'Maximize returns', 'asset diversification')." }
+        };
+
+
+
+
+        // REMOVED: Mock File Upload Handler (and related variables)
+        // fileUploadInput.addEventListener('change', (event) => {
+        //     if (event.target.files.length > 0) {
+        //         fileUploadText.textContent = `${event.target.files.length} files selected.`;
+        //         fileUploadText.classList.add('text-green-500');
+        //     } else {
+        //         fileUploadText.textContent = 'Drop your files here';
+        //         fileUploadText.classList.remove('text-green-500');
+        //     }
+        // });
+
+
+
+
+        // Helper function for copying text
+        function copyToClipboard(text, buttonElement) {
+            if (text && text.trim() !== '') {
+                // Use document.execCommand('copy') as navigator.clipboard.writeText() may not work in iframes
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    
+                    const originalHTML = buttonElement.innerHTML;
+                    
+                    buttonElement.innerHTML = 'Copied!';
+                    // Clean up existing colors for the copy button
+                    buttonElement.classList.remove('bg-blue-600', 'hover:bg-blue-500', 'bg-purple-600', 'hover:bg-purple-500', 'bg-red-600', 'hover:bg-red-500', 'bg-yellow-600', 'hover:bg-yellow-500', 'bg-green-600', 'hover:bg-green-600', 'bg-enhancement-primary', 'hover-bg-enhancement-primary', 'bg-enhancement-translated', 'hover-bg-enhancement-translated', 'bg-output-control', 'hover-bg-output-control', 'bg-output-control-secondary', 'hover-bg-output-control-secondary'); 
+                    buttonElement.classList.add('bg-green-600', 'hover:bg-green-600');
+                    
+                    setTimeout(() => {
+                        buttonElement.innerHTML = originalHTML;
+                        
+                        // New logic to reset colors based on stored attribute or ID/Class
+                        const baseClass = buttonElement.getAttribute('data-base-class');
+
+
+                        if (baseClass) {
+                            // For dynamic modal buttons, use the stored base class
+                            buttonElement.classList.add(...baseClass.split(' ')); 
+                        } else if (buttonElement.id.includes('copy-content')) {
+                            // For main copy buttons (Primary Output Control)
+                            buttonElement.classList.add('bg-output-control', 'hover-bg-output-control', 'text-black');
+                        } else if (buttonElement.id.includes('copy-translated')) {
+                            // For translated copy button (Primary Output Control)
+                            buttonElement.classList.add('bg-output-control', 'hover-bg-output-control', 'text-black');
+                        } else if (buttonElement.id.includes('regenerate')) {
+                            // Regenerate button (Secondary Output Control)
+                            buttonElement.classList.add('bg-output-control-secondary', 'hover-bg-output-control-secondary', 'text-black');
+                        } else if (buttonElement.classList.contains('enhancement-btn')) {
+                            // For static enhancement buttons (Primary Enhancement: Green)
+                            buttonElement.classList.add('bg-enhancement-primary', 'hover-bg-enhancement-primary', 'text-black');
+                        } else if (buttonElement.classList.contains('translated-enhancement-btn')) {
+                            // For static translated enhancement buttons (Translated Enhancement: Green/Secondary)
+                            buttonElement.classList.add('bg-enhancement-translated', 'hover-bg-enhancement-translated', 'text-black');
+                        }
+
+
+                        buttonElement.classList.remove('bg-green-600', 'hover:bg-green-600');
+                    }, 2000);
+
+
+
+
+                } catch (err) {
+                    console.error('Copy failed:', err);
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+
+
+
+
+        // Exponential Backoff implementation for retrying API calls
+        async function fetchWithRetry(url, options, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        if (response.status === 429) { // Rate limit exceeded
+                            throw new Error('Rate limit exceeded. Retrying...');
+                        }
+                        const errorBody = await response.text();
+                        throw new Error(`API Error: ${response.status} - ${errorBody}`);
+                    }
+                    return response;
+                } catch (error) {
+                    if (i === maxRetries - 1) {
+                        throw error;
+                    }
+                    // Log to console without calling the error logger
+                    // console.log(`Retry attempt ${i + 1} for API call due to error: ${error.message}`);
+                    const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+        }
+
+
+        // NEW: Function to clean up unwanted formatting from generated content
+        function cleanGeneratedText(text) {
+            if (!text) return '';
+            // 1. Remove common markdown bold/italic markers
+            text = text.replace(/\*\*\*([^\*]+)\*\*\*/g, '$1'); // ***text***
+            text = text.replace(/\*\*([^\*]+)\*\*/g, '$1');   // **text**
+            text = text.replace(/\*([^\*]+)\*/g, '$1');     // *text*
+
+
+            // 2. Remove backslashes used to escape hashtags and other characters
+            text = text.replace(/\\#/g, '#');
+            text = text.replace(/\\([*#])/g, '$1'); // Remove backslash before # or *
+
+
+            // 3. Remove standalone '***', '---' or similar separators that AI sometimes adds between sections
+            text = text.replace(/(\n\s*)[-*_]{3,}(\s*\n)/g, '\n\n'); 
+
+
+            // 4. Remove standalone hashtag lines (if AI ignores instructions)
+            text = text.replace(/\n\s*#[\w\u1000-\u109F]+\s*(#[\w\u1000-\u109F]+\s*)*/gi, '');
+            
+            // 5. Remove leading numbering (e.g., 1., 2., 1., 2) (New requirement for enhancement modal content)
+            // Added \s* to handle spacing after numbering, ensuring it removes the number cleanly.
+            text = text.replace(/^[0-9]+\.\s*/gm, ''); // Remove numbering followed by period and space at start of line
+            text = text.replace(/^[0-9]+\s*/gm, ''); // Remove numbering followed by space at start of line (less common, but catches some formats)
+
+
+
+
+            return text.trim();
+        }
+
+
+        // Function to handle general text generation (for translation/enhancement)
+        async function callGeminiApi(systemPrompt, userQuery) {
+            const apiKey = "";
+            const model = 'gemini-2.5-flash-preview-05-20';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+
+
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                // Use search grounding for better context and factual accuracy for real estate
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+
+
+
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            };
+
+
+
+
+            const response = await fetchWithRetry(apiUrl, options);
+            const result = await response.json();
+            
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (text) {
+                return text;
+            } else {
+                throw new Error("AI did not produce valid content.");
+            }
+        }
+
+
+
+
+        // Function to handle translation API call
+        async function translateContent(originalContent, targetLanguage) {
+            if (!originalContent) return;
+
+
+
+
+            // Reset translation UI
+            translatedOutputArea.classList.remove('hidden');
+            translationLoadingSpinner.classList.remove('hidden');
+            translatedContent.textContent = 'Translating...'; // Immediate feedback
+            copyTranslatedBtn.disabled = true;
+            // Hide translated enhancement section until successful
+            translatedEnhancementSection.classList.add('hidden'); 
+            translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
+
+
+
+
+            const systemPrompt = "You are a professional content translator. Translate the provided real estate advertisement text accurately into the specified language. Preserve the tone and intent, including any emojis or hashtags. Output must not contain any formatting markers like ** or ***.";
+            
+            const userQuery = `Translate the following real estate advertisement content into ${targetLanguage} language. Keep the original formatting, including line breaks, emojis, and hashtags. Output must not contain any formatting markers like ** or ***.
+
+
+
+
+--- CONTENT START ---
+${originalContent}
+--- CONTENT END ---
+`;
+            try {
+                const text = await callGeminiApi(systemPrompt, userQuery);
+                translatedContent.textContent = cleanGeneratedText(text); // Apply cleaning to translation output
+                copyTranslatedBtn.disabled = false;
+                // Show translated enhancement section and enable its buttons after successful translation
+                translatedEnhancementSection.classList.remove('hidden'); 
+                translatedEnhancementBtns.forEach(btn => btn.disabled = false);
+            } catch (error) {
+                console.error('Translation API Call Failed:', error);
+                translatedContent.textContent = `Error: Translation failed due to connection issue: ${error.message || 'Please try again.'}`;
+                translatedEnhancementSection.classList.add('hidden'); // Ensure hidden on error
+                translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+            } finally {
+                translationLoadingSpinner.classList.add('hidden');
+            }
+        }
+        
+        /**
+         * Function to handle enhancement API call (Caption/Headline/Hashtag)
+         * @param {string} contentType - The type of enhancement requested (caption, headline, hashtag).
+         * @param {string} sourceType - 'primary' for generatedContent or 'translated' for translatedContent.
+         */
+        async function generateEnhancement(contentType, sourceType) {
+            let sourceContent;
+            let targetLanguage;
+            let modalTitleColor;
+            let buttonBaseClass;
+            let sourceTitle;
+            
+            if (sourceType === 'primary') {
+                sourceContent = generatedContent.textContent;
+                targetLanguage = document.querySelector('input[name="languageOption"]:checked')?.value || 'English'; 
+                modalTitleColor = 'color-accent'; // Green
+                buttonBaseClass = 'bg-enhancement-primary hover-bg-enhancement-primary text-black';
+                sourceTitle = ''; 
+            } else if (sourceType === 'translated') {
+                sourceContent = translatedContent.textContent;
+                targetLanguage = document.querySelector('input[name="translateLanguage"]:checked')?.value || 'English'; 
+                modalTitleColor = 'color-secondary'; // Lighter Green
+                buttonBaseClass = 'bg-enhancement-translated hover-bg-enhancement-translated text-black';
+                sourceTitle = ''; 
+                
+                // Check if translation is actually done for translated source
+                if (!sourceContent || sourceContent.trim() === '' || sourceContent.startsWith('Error')) {
+                     showModal('Generation Error', 'Please perform a successful translation first before requesting enhancements for the translated text.', 'Error');
+                     return;
+                }
+            } else {
+                showModal('Error', 'Invalid enhancement source.', 'Error');
+                return;
+            }
+
+
+
+
+            if (!sourceContent || sourceContent.trim() === '' || sourceContent.startsWith('Error')) {
+                showModal('Generation Error', 'Please generate the main advertisement content successfully first before requesting enhancements.', 'Error');
+                return;
+            }
+
+
+
+
+            modalTitle.classList.remove('text-red-400', 'color-accent', 'color-secondary');
+            modalTitle.classList.add(modalTitleColor);
+            modalListContent.innerHTML = '';
+            modalLoadingSpinner.classList.remove('hidden');
+            enhancementModal.classList.remove('opacity-0', 'pointer-events-none');
+
+
+
+
+            let systemPrompt = "You are a specialized Real Estate Marketing AI. Based on the provided advertisement copy, you must generate a list of short, punchy marketing pieces. Your output MUST be a numbered list of ONLY the requested items. Output must not contain any formatting markers like ** or ***.";
+            let userQuery = '';
+            let titleText = '';
+            let count = 0;
+
+
+
+
+            switch (contentType) {
+                case 'caption':
+                    count = 15;
+                    titleText = `AD Caption Ideas ${sourceTitle ? `(${sourceTitle})` : ''}`; 
+                    // UPDATED: Added instruction for 1-3 emojis
+                    userQuery = `Based on the real estate ad copy below, generate ${count} descriptive, engaging AD Captions (**1-2 concise sentences** each) suitable for social media posts (e.g., Facebook, Instagram). The captions must be in ${targetLanguage} language. Focus on strong emotional hooks and clarity. Include **1 to 3 highly relevant emojis** in each caption. Output must not contain any formatting markers like ** or ***.`;
+                    break;
+                case 'headline':
+                    count = 15;
+                    titleText = `AD Headline Ideas ${sourceTitle ? `(${sourceTitle})` : ''}`; 
+                    // UPDATED: Added instruction for 1 emoji
+                    userQuery = `Based on the real estate ad copy below, generate ${count} powerful, compelling AD Headlines (**aiming for 5-10 powerful words**) suitable for Google Ads or a listing title. The headlines must be in ${targetLanguage} language. Focus on urgency, benefits, and numbers. Include **1 relevant emoji** in each headline. Output must not contain any formatting markers like ** or ***.`;
+                    break;
+                case 'hashtag':
+                    count = 30; 
+                    titleText = `Trending AD Hashtag Ideas ${sourceTitle ? `(${sourceTitle})` : ''}`; 
+                    // CRITICAL UPDATE: Instruct the AI to provide ONLY hashtags, no numbering.
+                    systemPrompt = "You are a specialized Real Estate Marketing AI. Based on the provided advertisement copy, you must generate a list of highly relevant and trending AD Hashtags. **Your output MUST be a list of ONLY the hashtags, starting with #, with no numbering, bullets, or introductory text.**";
+                    userQuery = `Based on the real estate ad copy below, generate ${count} highly relevant and trending AD Hashtags suitable for social media promotion. The hashtags must be in ${targetLanguage} language or commonly used English/Burmese real estate tags.`;
+                    break;
+            }
+
+
+
+
+            modalTitle.textContent = titleText;
+            userQuery = userQuery + `\n\n--- Source Ad Content (${targetLanguage}) ---\n${sourceContent}`;
+
+
+
+
+            try {
+                const resultText = await callGeminiApi(systemPrompt, userQuery);
+                
+                // Parse the results line by line and clean them
+                const items = resultText.split('\n')
+                                        // Apply full cleanup to remove unwanted numbering/formatting
+                                        .map(line => cleanGeneratedText(line).trim())
+                                        .filter(line => line.length > 0)
+                                        .slice(0, 30); // Hard cap the displayed items at 30 for UI consistency
+                
+                modalListContent.innerHTML = ''; // Clear previous content
+
+
+
+
+                if (items.length === 0) {
+                    modalListContent.innerHTML = `<p class="text-gray-400">Could not generate ${contentType} ideas. Please check the source content.</p>`;
+                } else {
+                    if (contentType === 'hashtag') {
+                        // LOGIC for Hashtags: Join and show in a box
+                        const cleanedItems = items
+                            .filter(item => item.startsWith('#')); // Ensure it's an actual hashtag (starts with #)
+
+
+
+
+                        const allHashtags = cleanedItems.join(' '); 
+                        
+                        const containerLi = document.createElement('li');
+                        containerLi.className = 'p-4 bg-gray-800 rounded-lg space-y-4';
+                        containerLi.innerHTML = `
+                            <p class="text-gray-400 text-sm font-medium border-b border-gray-700 pb-2">All ${cleanedItems.length} Generated Hashtags (Click the box to select all):</p>
+                            <textarea id="all-hashtags-textarea" readonly class="w-full h-32 bg-gray-900 border border-gray-700 p-3 rounded-lg text-gray-200 resize-none font-mono text-sm">${allHashtags}</textarea>
+                        `;
+
+
+
+
+                        // Add a listener to select text when clicking the textarea
+                        const textArea = containerLi.querySelector('#all-hashtags-textarea');
+                        textArea.addEventListener('click', () => textArea.select());
+
+
+
+
+                        const copyAllBtn = document.createElement('button');
+                        copyAllBtn.id = 'copy-all-hashtags-btn';
+                        copyAllBtn.setAttribute('data-base-class', buttonBaseClass); // Store the original color class
+                        copyAllBtn.className = `w-full ${buttonBaseClass} font-medium py-2 px-4 rounded-lg flex items-center justify-center transition duration-150`;
+                        copyAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg> Copy All Hashtags`;
+                        
+                        copyAllBtn.addEventListener('click', () => {
+                            copyToClipboard(allHashtags, copyAllBtn);
+                        });
+
+
+
+
+                        modalListContent.appendChild(containerLi);
+                        modalListContent.appendChild(copyAllBtn); // Appending button after the list item container
+
+
+
+
+                    } else {
+                        // Logic for Caption/Headline (individual copy buttons)
+                        items.forEach((item, index) => {
+                            const li = document.createElement('li');
+                            li.className = 'p-3 bg-gray-800 rounded-lg flex justify-between items-center';
+                            
+                            const textContainer = document.createElement('span');
+                            textContainer.className = 'text-gray-200 whitespace-pre-wrap flex-grow mr-4';
+                            // Text is already cleaned in items.map()
+                            textContainer.textContent = item; 
+                            textContainer.setAttribute('data-content', textContainer.textContent);
+
+
+
+
+                            const copyBtn = document.createElement('button');
+                            copyBtn.className = `copy-enhancement-btn ${buttonBaseClass} font-medium py-1 px-3 rounded-lg flex items-center transition duration-150 text-sm flex-shrink-0`; 
+                            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg> Copy';
+                            copyBtn.setAttribute('data-base-class', buttonBaseClass); // Store the original color class
+                            
+                            copyBtn.addEventListener('click', () => {
+                                copyToClipboard(textContainer.getAttribute('data-content'), copyBtn);
+                            });
+
+
+
+
+                            li.appendChild(textContainer);
+                            li.appendChild(copyBtn);
+                            modalListContent.appendChild(li);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Enhancement API Call Failed:', error);
+                modalListContent.innerHTML = `<p class="text-red-400">Failed to generate enhancement ideas: ${error.message}.</p>`;
+            } finally {
+                modalLoadingSpinner.classList.add('hidden');
+            }
+        }
+        
+        // Event Listeners for new buttons/switches
+        copyContentBtn.addEventListener('click', () => {
+            copyToClipboard(generatedContent.textContent, copyContentBtn);
+        });
+
+
+
+
+        regenerateContentBtn.addEventListener('click', (e) => {
+            generateContent(e);
+        });
+
+
+
+
+        copyTranslatedBtn.addEventListener('click', () => {
+            copyToClipboard(translatedContent.textContent, copyTranslatedBtn);
+        });
+
+
+
+
+        // Listener for translation radio buttons
+        translateLanguageOptions.addEventListener('change', (e) => {
+            if (e.target.name === 'translateLanguage' && e.target.checked) {
+                const originalContent = generatedContent.textContent;
+                const targetLanguage = e.target.value;
+                
+                translatedContent.textContent = '';
+                
+                // Only attempt translation if the main content has been generated successfully
+                if (originalContent && originalContent.trim() !== '' && !originalContent.startsWith('Error') && !originalContent.includes('Generating...')) {
+                    translateContent(originalContent, targetLanguage);
+                } else {
+                    translatedContent.textContent = 'Please generate the main content successfully first.';
+                    translatedOutputArea.classList.remove('hidden');
+                    translatedEnhancementSection.classList.add('hidden'); // Hide enhancement on content error
+                    translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+                }
+            }
+        });
+
+
+
+
+        /**
+         * Setup enhancement button listeners, differentiating between primary and translated sources.
+         * @param {NodeListOf<Element>} buttons - The buttons to attach listeners to.
+         * @param {string} sourceType - 'primary' or 'translated'.
+         */
+        function setupEnhancementListeners(buttons, sourceType) {
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const contentType = btn.getAttribute('data-type');
+                    // Pass both content type and source type
+                    generateEnhancement(contentType, sourceType); 
+                });
+            });
+        }
+
+
+
+
+        // Setup for primary buttons (always use generatedContent)
+        setupEnhancementListeners(enhancementBtns, 'primary'); 
+        
+        // Setup for translated buttons (always use translatedContent)
+        setupEnhancementListeners(translatedEnhancementBtns, 'translated'); 
+
+
+
+
+        // Modal control functions
+        function showModal(title, content, type) {
+            modalTitle.textContent = title;
+            modalListContent.innerHTML = ''; // Clear list content
+            modalLoadingSpinner.classList.add('hidden');
+            
+            // For simple error/message popups (using the list area)
+            if (type === 'Error') {
+                 modalListContent.innerHTML = `<p class="text-red-400 font-medium">${content}</p>`;
+            } else if (typeof content === 'string') {
+                modalListContent.innerHTML = `<p class="text-gray-200">${content}</p>`;
+            }
+            
+            enhancementModal.classList.remove('opacity-0', 'pointer-events-none');
+        }
+
+
+
+
+        closeModalBtn.addEventListener('click', () => {
+            enhancementModal.classList.add('opacity-0', 'pointer-events-none');
+        });
+
+
+
+
+        enhancementModal.addEventListener('click', (e) => {
+            if (e.target === enhancementModal) {
+                enhancementModal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        });
+        
+        // Initial setup for buttons (Primary buttons enabled on success, translated buttons disabled)
+        // Note: The actual enabling/disabling is done in generateContent/translateContent
+        enhancementBtns.forEach(btn => btn.disabled = true);
+        translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+
+
+
+
+
+
+
+
+        // Attach the main generation function to the form
+        form.addEventListener('submit', generateContent);
+
+
+
+
+        // Main generation function
+        async function generateContent(e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+
+
+
+            // Reset UI states
+            translatedOutputArea.classList.add('hidden');
+            translatedContent.textContent = '';
+            // Hide and disable all enhancement buttons until content is ready
+            translatedEnhancementSection.classList.add('hidden'); 
+            enhancementBtns.forEach(btn => btn.disabled = true); 
+            translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
+
+
+
+
+            // 1. Show Loading State
+            outputArea.classList.remove('hidden');
+            generatedContent.textContent = 'Generating...'; // Provide immediate feedback
+            document.getElementById('sources-area').classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            generateButton.disabled = true;
+            generateButton.textContent = 'Generating...';
+            regenerateContentBtn.disabled = true;
+
+
+
+
+            const apiKey = ""; // Canvas will automatically provide the key
+            const model = 'gemini-2.5-flash-preview-05-20';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+
+
+
+            // 2. Collect Form Data and Toggle States
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+
+
+
+            data.propertyType = formData.get('propertyType');
+            data.languageOption = formData.get('languageOption');
+            data.toneOfVoice = formData.get('toneOfVoice');
+            data.conditional = formData.get('conditional');
+            data.outputLevel = formData.get('outputLevel');
+
+
+
+
+            const wordLimit = WORD_LIMITS[data.outputLevel] || 400;
+            const includeEmoji = document.getElementById('toggle-emoji').checked;
+            const includeHash = document.getElementById('toggle-hash').checked;
+            
+            const selectedToneKey = data.toneOfVoice; 
+            const toneDetails = TONE_INSTRUCTIONS[selectedToneKey];
+            const toneStyleInstruction = toneDetails ? toneDetails.style : "General sales tone, smooth and compelling writing style.";
+            const toneFocusInstruction = toneDetails ? toneDetails.focus : "Focus on general real estate appeal.";
+
+
+
+
+
+
+
+
+            // 3. Construct the System Instruction and User Prompt
+            // CRITICAL UPDATE: Update System Prompt for Burmese language quality and research focus
+            let generatedContentSystemPrompt = `You are a World-Class Real Estate Copywriting Specialist. Your primary goal is to generate compelling, high-quality, and market-ready marketing content for a real estate property. **When writing in Burmese (မြန်မာ), ensure the language is highly polished, professional, culturally appropriate, and uses fluent, native-sounding sentence structure (အရေးအသား ပြေပြစ်ကောင်းမွန်ရမည်).** The output must strictly adhere to the requested Tone of Voice and word limit. You must use the writing style: **${toneStyleInstruction}**. Focus on: **${toneFocusInstruction}**. You are allowed to use Google Search (grounding) to ensure your facts about developers, locations, and market trends are accurate. The generated content MUST be approximately ${wordLimit} words long. Structure the output clearly, avoiding repetitive phrases. Output must not contain any markdown formatting like ** or *** or bullet points.`;
+            
+            // Add instructions only if toggles are ON.
+            if (includeEmoji) {
+                generatedContentSystemPrompt += " If the user enables Emojis, use 10 to 35 high-quality, relevant, and balanced emojis that significantly enhance the text, avoiding overuse. The actual count should be proportional to the word count and tone (e.g., more emojis for shorter, sales-focused content).";
+            }
+            if (includeHash) {
+                generatedContentSystemPrompt += " If the user enables Hash Tags, include 3-5 relevant hashtags at the end of the content.";
+            }
+
+
+            // Burmese instructions for Emojis/Hashtags - ensure they instruct the AI to comply with the toggle state.
+            const emojiInstruction = includeEmoji ? "သဘာဝကျပြီး ဆွဲဆောင်မှုရှိသော Emojis များကို **၁၀ လုံးမှ ၃၅ လုံးအတွင်း** content အရေးအသား အသုံးနှုန်းပေါ်မူတည်ပြီး ချိန်ဆ၍ ထည့်သွင်းပါ။" : "Emojis များ လုံးဝမထည့်ရ။";
+            const hashInstruction = includeHash ? "အဆုံးတွင် သက်ဆိုင်ရာ Hash Tags ၃-၅ ခု ထည့်သွင်းပါ။" : "Hash Tags များ လုံးဝမထည့်ရ။";
+            
+            // User Query: Ensure no generic symbols (like ***) are requested.
+            const userQuery = `
+            အောက်ပါ အချက်အလက်များပေါ်မူတည်၍ ${data.languageOption} ဘာသာစကားဖြင့် **'${data.toneOfVoice}'** ပြောဆိုဟန်အတိုင်း ဆွဲဆောင်မှုရှိသော အိမ်ခြံမြေကြော်ငြာစာသားတစ်ခုကို (ခန့်မှန်းခြေအားဖြင့် ${wordLimit} စာလုံး) အတိုင်းအတာဖြင့် ဖန်တီးပေးပါ။
+
+
+
+
+            ## အချက်အလက်များ:
+            - Real Estate Name: ${data.realEstateName || 'Not specified'}
+            - Target Audience: ${data.targetAudience || 'Not specified'}
+            - Project Name: ${data.projectName || 'Not specified'}
+            - Property Type: ${data.propertyType}
+            - Developer: ${data.developerName || 'Not specified'}
+            - Highlight Location: ${data.highlightLocation || 'Not specified'}
+            - Size/Rooms: ${data.sizeRooms || 'Not specified'}
+            - Facilities/Features: ${data.facilities || 'Not specified'}
+            - Price Information: ${data.priceInfo || 'Not specified'}
+            - Selling Point (Highlight): ${data.sellingPoint || 'Not specified'}
+            - Condition: ${data.conditional}
+            - Tone of Voice: ${data.toneOfVoice}
+            
+            ## အပိုဆောင်းညွှန်ကြားချက်များ:
+            - Emoji: ${emojiInstruction}
+            - Hash Tags: ${hashInstruction}
+            - Formatting: output စာသားတွင် စာစဥ်နံပါတ် (numbered list) သို့မဟုတ် **၊ *** ၊ # စသော အမှတ်အသားများ လုံးဝမထည့်ရ။ **မြန်မာဘာသာစကားဖြင့် ရေးသားပါက၊ အရေးအသားပြေပြစ်ကောင်းမွန်ပြီး၊ သဘာဝကျသော စာလုံးအသုံးအနှုန်းများကိုသာ အသုံးပြုပါ။**
+            
+            ## လိုအပ်ချက်:
+            ကျေးဇူးပြု၍ ပေးထားသည့် **'ပြောဆိုဟန်'** နှင့် **'အလျားအတိုင်းအတာ'** တို့နှင့်အညီ အကောင်းဆုံး၊ အဆွဲဆောင်နိုင်ဆုံး ကြော်ငါစာသားကိုသာ တိုက်ရိုက်ပြန်လည်ဖြေကြားပေးပါ။
+            `;
+            
+            // 4. API Payload (already constructed)
+            const payload_ = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: generatedContentSystemPrompt }]
+                },
+            };
+
+
+
+
+            const options = {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload_)
+            };
+
+
+
+
+            // 5. Call API
+            try {
+                const response = await fetchWithRetry(apiUrl, options);
+                const result = await response.json();
+                
+                const candidate = result.candidates?.[0];
+
+
+
+
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    const text = candidate.content.parts[0].text;
+                    generatedContent.textContent = cleanGeneratedText(text); // Apply cleaning filter
+                    
+                    // Enable primary enhancement buttons (only for original content)
+                    enhancementBtns.forEach(btn => btn.disabled = false);
+
+
+
+
+                    // Disable translated enhancement buttons initially
+                    translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+
+
+
+
+                    // Extract Grounding Sources
+                    let sources = [];
+                    const groundingMetadata = candidate.groundingMetadata;
+                    const sourcesArea = document.getElementById('sources-area');
+                    const sourceList = document.getElementById('source-list');
+                    sourcesArea.classList.add('hidden');
+                    sourceList.innerHTML = '';
+
+
+
+
+                    if (groundingMetadata && groundingMetadata.groundingAttributions) {
+                        sources = groundingMetadata.groundingAttributions
+                            .map(attribution => ({
+                                uri: attribution.web?.uri,
+                                title: attribution.web?.title,
+                            }))
+                            .filter(source => source.uri && source.title);
+
+
+
+
+                        if (sources.length > 0) {
+                            sourcesArea.classList.remove('hidden');
+                            sources.forEach(source => {
+                                const li = document.createElement('li');
+                                const a = document.createElement('a');
+                                a.href = source.uri;
+                                a.target = '_blank';
+                                a.rel = 'noopener noreferrer';
+                                a.textContent = `${source.title} (${source.uri})`;
+                                a.className = 'text-blue-400 hover:text-blue-300';
+                                li.appendChild(a);
+                                sourceList.appendChild(li);
+                            });
+                        }
+                    }
+
+
+
+
+                } else {
+                    generatedContent.textContent = 'Error generating content. AI could not produce content.';
+                    enhancementBtns.forEach(btn => btn.disabled = true);
+                    translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+                }
+
+
+
+
+            } catch (error) {
+                console.error('API Call Failed:', error);
+                generatedContent.textContent = `Connection issue or API error: ${error.message || 'Please try again.'}`;
+                enhancementBtns.forEach(btn => btn.disabled = true);
+                translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+            } finally {
+                // 6. Reset State
+                loadingSpinner.classList.add('hidden');
+                generateButton.disabled = false;
+                generateButton.textContent = 'Generate Content';
+                regenerateContentBtn.disabled = false;
+            }
+        }
+
+
+
+
+    </script>
+</body>
+</html>
