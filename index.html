@@ -20,6 +20,7 @@
         window.db = window.firebaseApp ? getFirestore(window.firebaseApp) : null;
         window.initialAuthToken = initialAuthToken;
 
+
         // Simplified Sign-In Logic (now only signs in anonymously as fallback after user input)
         window.authenticateFirebase = async () => {
             if (window.auth) {
@@ -36,6 +37,7 @@
         };
         // --- END MANDATORY FIREBASE CONFIG & GLOBAL SETUP ---
     </script>
+
 
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,6 +104,7 @@
         
         /* --- App Form/Input Styling (Main App) --- */
 
+
         .input-field, select {
             background-color: #151515; 
             border: 1px solid #333333;
@@ -151,12 +154,14 @@
             box-shadow: 0 8px 25px rgba(0, 184, 148, 0.9);
         }
 
+
         /* Output Area Styling */
         #output-area {
             background-color: #151515;
             border: 1px solid #333333;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
         }
+
 
         /* Enhancement Button Colors (Primary/Secondary Green Shades) */
         .bg-enhancement-primary {
@@ -194,6 +199,8 @@
         /* --- END NEW BUTTON STYLING --- */
 
 
+
+
         /* Custom Modal Styles */
         .modal-content {
             background-color: #1a1a1a;
@@ -206,6 +213,7 @@
 </head>
 <body>
 
+
     <!-- Login Overlay -->
     <div id="login-overlay" class="fixed inset-0 flex items-center justify-center transition-opacity duration-300 opacity-100 z-50">
         <div class="login-card">
@@ -216,9 +224,11 @@
             </header>
             
             <div class="mb-6 text-center">
+                <!-- UPDATED: Removed password reference -->
                 <h3 class="text-lg font-semibold color-secondary mb-1">Log in with API Key</h3>
                 <p class="text-sm text-gray-400">Please enter your **API Key** to use the application.</p>
             </div>
+
 
             <form id="login-form" class="space-y-4">
                 <!-- Gemini API Key Input -->
@@ -226,8 +236,9 @@
                     <label for="apiKey" class="block text-sm font-medium mb-1">Gemini API Key</label>
                     <input type="text" id="apiKey" name="apiKey" class="login-input-field w-full" placeholder="Enter API Key" required>
                 </div>
-                <!-- REMOVED: Password Input Field and Toggle -->
-                
+                <!-- REMOVED: Password Input -->
+
+
                 <div id="login-message" class="text-sm text-center text-red-400 hidden"></div>
                 
                 <button type="submit" class="login-button w-full">Log In</button>
@@ -235,6 +246,8 @@
         </div>
     </div>
     <!-- End Login Overlay -->
+
+
 
 
     <!-- Main App Container (Hidden until logged in) -->
@@ -256,6 +269,8 @@
         </header>
 
 
+
+
         <!-- Main Form Container -->
         <form id="ad-writer-form" class="space-y-8">
             <!-- Section 1: Top Inputs -->
@@ -273,8 +288,12 @@
             </div>
 
 
+
+
             <!-- Project Information Section Title -->
             <h3 class="text-2xl font-bold color-accent pt-4 border-b border-gray-700 pb-2">Project Information</h3>
+
+
 
 
             <!-- Section 2: Project Details (Layout modified to move Property Type below Project Name input field) -->
@@ -294,7 +313,7 @@
             <!-- Property Type Button Group (Now in its own full-width row after Project Name/Developer) -->
             <div class="button-group pt-2">
                 <label class="block text-sm font-medium mb-2">Property Type</label>
-                <div class="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-5 text-sm"> <!-- Increased gap for visual clarity -->
+                <div class="grid grid-cols-3 md:grid-cols-5 gap-3 text-sm"> <!-- Increased gap for visual clarity -->
                     <!-- Property Type Radios -->
                     <input type="radio" id="condo" name="propertyType" value="ကွန်ဒို" class="hidden" checked>
                     <label for="condo" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">Condo</label>
@@ -313,6 +332,7 @@
                 </div>
             </div>
 
+
             <!-- Remaining Project Details (Start a new grid section) -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4"> 
                 <!-- Highlight Location -->
@@ -320,6 +340,8 @@
                     <label for="highlightLocation" class="block text-sm font-medium mb-2">Highlight Location</label>
                     <input type="text" id="highlightLocation" name="highlightLocation" class="input-field w-full" placeholder="(e.g., Near BTS Phayathai)">
                 </div>
+
+
 
 
                 <!-- Size / Rooms -->
@@ -334,6 +356,8 @@
                 </div>
 
 
+
+
                 <!-- Price Information -->
                 <div>
                     <label for="priceInfo" class="block text-sm font-medium mb-2">Price Information</label>
@@ -345,6 +369,8 @@
                     <input type="text" id="sellingPoint" name="sellingPoint" class="input-field w-full" placeholder="(e.g., 3-minute walk to BTS Phayathai)">
                 </div>
             </div>
+
+
 
 
             <!-- Section 3: Language & Tone (Stays stacked vertically) -->
@@ -375,6 +401,8 @@
                 </div>
 
 
+
+
                 <!-- Tone of Voice Button Group -->
                 <div class="button-group">
                     <label class="block text-sm font-medium mb-2">Tone of Voice</label>
@@ -385,6 +413,8 @@
                         
                         <input type="radio" id="tone-luxury" name="toneOfVoice" value="ခမ်းနားထည်ဝါ" class="hidden">
                         <label for="tone-luxury" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Luxury</label>
+
+
 
 
                         <input type="radio" id="tone-pro" name="toneOfVoice" value="ကျွမ်းကျင်ပညာရှင်ဆန်" class="hidden">
@@ -409,6 +439,8 @@
             </div>
 
 
+
+
             <!-- Section 4: Conditional -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
                 <!-- Conditional Button Group (Takes full width on MD screens) -->
@@ -428,6 +460,8 @@
                 </div>
                 <!-- Reference URL and File Upload inputs were here and are now removed -->
             </div>
+
+
 
 
             <!-- Section 5: Output Level (Word limits removed from label, kept in value) -->
@@ -453,6 +487,8 @@
                 </div>
 
 
+
+
                 <!-- Section 6: Generate Button and Toggles -->
                 <div class="flex justify-center items-stretch gap-4 pt-8">
                     <!-- Toggle 1: Emoji -->
@@ -462,11 +498,15 @@
                     </div>
 
 
+
+
                     <!-- Toggle 2: Hash Tag -->
                     <div class="button-group w-1/5 max-w-[80px]">
                         <input type="checkbox" id="toggle-hash" name="toggleHash" class="hidden" checked>
                         <label for="toggle-hash" class="py-3 px-3 rounded-xl border-gray-600 text-3xl font-mono transition duration-150 flex items-center justify-center h-full hover:bg-[#3d3d3d]">#</label>
                     </div>
+
+
 
 
                     <!-- Generate Content Button (Wider) -->
@@ -476,7 +516,11 @@
                 </div>
 
 
+
+
             </form>
+
+
 
 
             <!-- Output Area (Hidden initially) -->
@@ -490,6 +534,8 @@
                     <p class="mt-2 text-gray-400">AI is generating content. Please wait...</p>
                 </div>
                 <div id="generated-content" class="whitespace-pre-wrap text-gray-200"></div>
+
+
 
 
                 <!-- Primary Output Controls (Copy & Regenerate) -->
@@ -514,6 +560,8 @@
                         Regenerate Content
                     </button>
                 </div>
+
+
 
 
                 <!-- PRIMARY Content Enhancement Section (Uses Generated Content) -->
@@ -562,6 +610,8 @@
                     </div>
 
 
+
+
                     <!-- Translated Content Output Area -->
                     <div id="translated-output-area" class="mt-6 p-4 rounded-lg bg-gray-700 hidden">
                         <div id="translation-loading-spinner" class="text-center p-4 hidden">
@@ -599,7 +649,11 @@
                     <!-- END TRANSLATED Content Enhancement Section -->
 
 
+
+
                 </div>
+
+
 
 
                 <div id="sources-area" class="mt-4 pt-4 border-t border-gray-700 text-sm text-gray-500 hidden">
@@ -609,6 +663,8 @@
             </div>
             <!-- End Output Area -->
         </div>
+
+
 
 
         <!-- Modal for Captions/Headlines/Hashtags -->
@@ -635,24 +691,29 @@
         <!-- End Modal -->
 
 
+
+
         <script>
             // --- LOGIN CONSTANTS (DUMMY AUTH) ---
             // NEW: Local storage key for persistence
             const STORAGE_KEY = 'geminiApiKey';
-            // REMOVED: VALID_PASSWORD constant
+            const VALID_API_KEY = null; 
+            // REMOVED: const VALID_PASSWORD = "digimetric@reAd"; 
             
             // Global variable to store the user-provided API key for network calls
             window.apiKeyOverride = ""; 
             // --- END LOGIN CONSTANTS ---
 
+
             const loginOverlay = document.getElementById('login-overlay');
             const loginForm = document.getElementById('login-form');
             const appContainer = document.getElementById('app-container');
             const loginMessage = document.getElementById('login-message');
-            // REMOVED: passwordInput, togglePasswordButton, eyeOpenIcon, eyeClosedIcon references
+            // REMOVED password-related variables: passwordInput, togglePasswordButton, eyeOpenIcon, eyeClosedIcon
             const logoutButton = document.getElementById('logout-button');
 
-            // REMOVED: Toggle password visibility logic
+
+            // REMOVED Toggle password visibility logic
             
             function showApp() {
                 // Ensure login overlay is hidden.
@@ -670,8 +731,10 @@
                 // 1. Clear stored API Key from Local Storage
                 localStorage.removeItem(STORAGE_KEY); 
 
+
                 // 2. Clear runtime Key
                 window.apiKeyOverride = "";
+
 
                 // 3. Clear login form inputs for security/privacy
                 document.getElementById('apiKey').value = '';
@@ -688,31 +751,42 @@
                 loginOverlay.classList.add('opacity-100');
             }
 
+
             // Attach Logout Handler
             if (logoutButton) {
                 logoutButton.addEventListener('click', handleLogout);
             }
 
-            // --- NEW: INITIAL LOAD CHECK FOR PERSISTENCE (FIXED) ---
+
+            // --- NEW: INITIAL LOAD CHECK FOR PERSISTENCE ---
             if (window.authenticateFirebase) {
                 window.addEventListener('load', async () => {
                     const storedApiKey = localStorage.getItem(STORAGE_KEY);
                     
-                    // 1. Always try to authenticate Firebase (mandatory environment setup)
-                    await window.authenticateFirebase();
-                    
                     if (storedApiKey) {
                         window.apiKeyOverride = storedApiKey;
-                        console.log("Found stored API key. Showing app directly.");
-                        showApp();
-                        return; // Stop here, app is shown
+                        
+                        // Try to authenticate silently
+                        const authReady = await window.authenticateFirebase();
+                        
+                        if (authReady && window.auth && window.auth.currentUser) {
+                            console.log("Found stored API key. Automatic sign-in successful. Showing app.");
+                            showApp();
+                            return; // Stop here, app is shown
+                        } else {
+                            // Auth failed with stored key (e.g., token expired), force relogin
+                            console.log("Stored API key found but authentication failed. Forcing re-login.");
+                            localStorage.removeItem(STORAGE_KEY);
+                            window.apiKeyOverride = "";
+                        }
                     }
                     
-                    // 2. If no key found, ensure the login screen is visible.
+                    // If not automatically signed in, show the login screen.
                     loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
                 });
             }
             // --- END NEW INITIAL LOAD CHECK ---
+
 
             
             // Handle login form submission
@@ -729,7 +803,8 @@
                     loginButton.disabled = true;
                     loginButton.textContent = 'Verifying...';
 
-                    // --- AUTH CHECK ---
+
+                    // --- AUTH CHECK (Only checking API Key presence now) ---
                     // 1. Check if API Key is provided
                     if (!apiKey) {
                         loginMessage.textContent = 'API Key is required.';
@@ -739,11 +814,15 @@
                         return;
                     }
                     
-                    // 2. If valid (API Key is present), store the user's API Key and proceed with Firebase sign-in
+                    // REMOVED: Password check (if (password !== VALID_PASSWORD) ...)
+
+
+                    // 2. If valid, store the user's API Key and proceed with Firebase sign-in
                     window.apiKeyOverride = apiKey;
 
+
                     try {
-                        console.log("Login successful locally (API Key check passed). Attempting Firebase auth...");
+                        console.log("Login successful locally. Attempting Firebase auth...");
                         
                         // Call the authenticateFirebase function again to ensure session context is established
                         const authSuccess = await window.authenticateFirebase();
@@ -753,6 +832,7 @@
                             
                             // NEW: Save API key to localStorage for persistence
                             localStorage.setItem(STORAGE_KEY, apiKey); 
+
 
                             loginButton.textContent = 'Success!';
                             loginButton.style.backgroundColor = '#4CAF50'; // Temporarily change to green success
@@ -766,7 +846,7 @@
                         
                     } catch (error) {
                         console.error("Full Login Process Failed:", error);
-                        loginMessage.textContent = `Login Failed: ${error.message || 'Please check your connection and credentials.'}`;
+                        loginMessage.textContent = `Login Failed: ${error.message || 'Please check your connection and API Key.'}`;
                         loginMessage.classList.remove('hidden');
                         
                         // Reset button state on failure
@@ -777,7 +857,9 @@
                 });
             }
 
+
             // --- MAIN APP LOGIC (Rest of the script remains unchanged) ---
+
 
             const form = document.getElementById('ad-writer-form');
             const outputArea = document.getElementById('output-area');
@@ -786,6 +868,8 @@
             const generateButton = document.getElementById('generate-button');
             // REMOVED: const fileUploadInput = document.getElementById('fileUpload');
             // REMOVED: const fileUploadText = document.getElementById('file-upload-text');
+
+
 
 
             const copyContentBtn = document.getElementById('copy-content-btn');
@@ -810,6 +894,8 @@
             const translatedEnhancementBtns = document.querySelectorAll('.translated-enhancement-btn');
 
 
+
+
             const WORD_LIMITS = {
                 "အတိုချုပ် (Short) - World Limit 200": 200,
                 "အလယ်အလတ် (Medium) - World Limit 320": 320,
@@ -817,6 +903,8 @@
                 "ကျယ်ကျယ်ပြန့်ပြန့် (Extended) - World Limit 550": 550,
                 "ပြည့်စုံလုံလောက် (Comprehensive) - World Limit 750": 750
             };
+
+
 
 
             const TONE_INSTRUCTIONS = {
@@ -832,6 +920,8 @@
             };
 
 
+
+
             // REMOVED: Mock File Upload Handler (and related variables)
             // fileUploadInput.addEventListener('change', (event) => {
             //     if (event.target.files.length > 0) {
@@ -842,6 +932,8 @@
             //         fileUploadText.classList.remove('text-green-500');
             //     }
             // });
+
+
 
 
             // Helper function for copying text
@@ -868,6 +960,7 @@
                             // New logic to reset colors based on stored attribute or ID/Class
                             const baseClass = buttonElement.getAttribute('data-base-class');
 
+
                             if (baseClass) {
                                 // For dynamic modal buttons, use the stored base class
                                 buttonElement.classList.add(...baseClass.split(' ')); 
@@ -888,8 +981,11 @@
                                 buttonElement.classList.add('bg-enhancement-translated', 'hover-bg-enhancement-translated', 'text-black');
                             }
 
+
                             buttonElement.classList.remove('bg-green-600', 'hover:bg-green-600');
                         }, 2000);
+
+
 
 
                     } catch (err) {
@@ -898,6 +994,8 @@
                     document.body.removeChild(textarea);
                 }
             }
+
+
 
 
             // Exponential Backoff implementation for retrying API calls
@@ -925,6 +1023,7 @@
                 }
             }
 
+
             // NEW: Function to clean up unwanted formatting from generated content
             function cleanGeneratedText(text) {
                 if (!text) return '';
@@ -933,12 +1032,15 @@
                 text = text.replace(/\*\*([^\*]+)\*\*/g, '$1');   // **text**
                 text = text.replace(/\*([^\*]+)\*/g, '$1');     // *text*
 
+
                 // 2. Remove backslashes used to escape hashtags and other characters
                 text = text.replace(/\\#/g, '#');
                 text = text.replace(/\\([*#])/g, '$1'); // Remove backslash before # or *
 
+
                 // 3. Remove standalone '***', '---' or similar separators that AI sometimes adds between sections
                 text = text.replace(/(\n\s*)[-*_]{3,}(\s*\n)/g, '\n\n'); 
+
 
                 // 4. Remove standalone hashtag lines (if AI ignores instructions)
                 text = text.replace(/\n\s*#[\w\u1000-\u109F]+\s*(#[\w\u1000-\u109F]+\s*)*/gi, '');
@@ -949,14 +1051,21 @@
                 text = text.replace(/^[0-9]+\s*/gm, ''); // Remove numbering followed by space at start of line (less common, but catches some formats)
 
 
-                return text.trim();
+                // 6. Remove remaining line breaks at the end
+                text = text.trim(); 
+
+                return text;
             }
+
 
             // Function to handle general text generation (for translation/enhancement)
             async function callGeminiApi(systemPrompt, userQuery) {
-                const apiKey = "";
+                // Use the key provided in the login form or from local storage
+                const apiKey = window.apiKeyOverride || "";
                 const model = 'gemini-2.5-flash-preview-05-20';
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+
 
 
                 const payload = {
@@ -969,11 +1078,15 @@
                 };
 
 
+
+
                 const options = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 };
+
+
 
 
                 const response = await fetchWithRetry(apiUrl, options);
@@ -989,9 +1102,13 @@
             }
 
 
+
+
             // Function to handle translation API call
             async function translateContent(originalContent, targetLanguage) {
                 if (!originalContent) return;
+
+
 
 
                 // Reset translation UI
@@ -1004,11 +1121,11 @@
                 translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
 
 
-                const systemPrompt = "You are a professional content translator. Translate the provided real estate advertisement text accurately into the specified language. Preserve the tone and intent, including any emojis or hashtags. Output must not contain any formatting markers like ** or ***.";
+
+
+                const systemPrompt = "You are a professional content translator. Translate the provided real estate advertisement text accurately into the specified language. Preserve the tone and intent, including any emojis or hashtags. Output must not contain any formatting markers like ** or *** or bullet points.";
                 
-                const userQuery = `Translate the following real estate advertisement content into ${targetLanguage} language. Keep the original formatting, including line breaks, emojis, and hashtags. Output must not contain any formatting markers like ** or ***.
-
-
+                const userQuery = `Translate the following real estate advertisement content into ${targetLanguage} language. Keep the original formatting, including line breaks, emojis, and hashtags. Output must not contain any formatting markers like ** or *** or bullet points.
 --- CONTENT START ---
 ${originalContent}
 --- CONTENT END ---
@@ -1066,10 +1183,14 @@ ${originalContent}
                 }
 
 
+
+
                 if (!sourceContent || sourceContent.trim() === '' || sourceContent.startsWith('Error')) {
                     showModal('Generation Error', 'Please generate the main advertisement content successfully first before requesting enhancements.', 'Error');
                     return;
                 }
+
+
 
 
                 modalTitle.classList.remove('text-red-400', 'color-accent', 'color-secondary');
@@ -1079,10 +1200,14 @@ ${originalContent}
                 enhancementModal.classList.remove('opacity-0', 'pointer-events-none');
 
 
-                let systemPrompt = "You are a specialized Real Estate Marketing AI. Based on the provided advertisement copy, you must generate a list of short, punchy marketing pieces. Your output MUST be a numbered list of ONLY the requested items. Output must not contain any formatting markers like ** or ***.";
+
+
+                let systemPrompt = "You are a specialized Real Estate Marketing AI. Based on the provided advertisement copy, you must generate a list of short, punchy marketing pieces. Your output MUST be a numbered list of ONLY the requested items. Output must not contain any formatting markers like ** or *** or bullet points.";
                 let userQuery = '';
                 let titleText = '';
                 let count = 0;
+
+
 
 
                 switch (contentType) {
@@ -1090,13 +1215,13 @@ ${originalContent}
                         count = 15;
                         titleText = `AD Caption Ideas ${sourceTitle ? `(${sourceTitle})` : ''}`; 
                         // UPDATED: Added instruction for 1-3 emojis
-                        userQuery = `Based on the real estate ad copy below, generate ${count} descriptive, engaging AD Captions (**1-2 concise sentences** each) suitable for social media posts (e.g., Facebook, Instagram). The captions must be in ${targetLanguage} language. Focus on strong emotional hooks and clarity. Include **1 to 3 highly relevant emojis** in each caption. Output must not contain any formatting markers like ** or ***.`;
+                        userQuery = `Based on the real estate ad copy below, generate ${count} descriptive, engaging AD Captions (**1-2 concise sentences** each) suitable for social media posts (e.g., Facebook, Instagram). The captions must be in ${targetLanguage} language. Focus on strong emotional hooks and clarity. Include **1 to 3 highly relevant emojis** in each caption. Output must not contain any formatting markers like ** or *** or bullet points.`;
                         break;
                     case 'headline':
                         count = 15;
                         titleText = `AD Headline Ideas ${sourceTitle ? `(${sourceTitle})` : ''}`; 
                         // UPDATED: Added instruction for 1 emoji
-                        userQuery = `Based on the real estate ad copy below, generate ${count} powerful, compelling AD Headlines (**aiming for 5-10 powerful words**) suitable for Google Ads or a listing title. The headlines must be in ${targetLanguage} language. Focus on urgency, benefits, and numbers. Include **1 relevant emoji** in each headline. Output must not contain any formatting markers like ** or ***.`;
+                        userQuery = `Based on the real estate ad copy below, generate ${count} powerful, compelling AD Headlines (**aiming for 5-10 powerful words**) suitable for Google Ads or a listing title. The headlines must be in ${targetLanguage} language. Focus on urgency, benefits, and numbers. Include **1 relevant emoji** in each headline. Output must not contain any formatting markers like ** or *** or bullet points.`;
                         break;
                     case 'hashtag':
                         count = 30; 
@@ -1108,8 +1233,12 @@ ${originalContent}
                 }
 
 
+
+
                 modalTitle.textContent = titleText;
                 userQuery = userQuery + `\n\n--- Source Ad Content (${targetLanguage}) ---\n${sourceContent}`;
+
+
 
 
                 try {
@@ -1125,6 +1254,8 @@ ${originalContent}
                     modalListContent.innerHTML = ''; // Clear previous content
 
 
+
+
                     if (items.length === 0) {
                         modalListContent.innerHTML = `<p class="text-gray-400">Could not generate ${contentType} ideas. Please check the source content.</p>`;
                     } else {
@@ -1132,6 +1263,8 @@ ${originalContent}
                             // LOGIC for Hashtags: Join and show in a box
                             const cleanedItems = items
                                 .filter(item => item.startsWith('#')); // Ensure it's an actual hashtag (starts with #)
+
+
 
 
                             const allHashtags = cleanedItems.join(' '); 
@@ -1144,9 +1277,13 @@ ${originalContent}
                             `;
 
 
+
+
                             // Add a listener to select text when clicking the textarea
                             const textArea = containerLi.querySelector('#all-hashtags-textarea');
                             textArea.addEventListener('click', () => textArea.select());
+
+
 
 
                             const copyAllBtn = document.createElement('button');
@@ -1160,8 +1297,12 @@ ${originalContent}
                             });
 
 
+
+
                             modalListContent.appendChild(containerLi);
                             modalListContent.appendChild(copyAllBtn); // Appending button after the list item container
+
+
 
 
                         } else {
@@ -1177,6 +1318,8 @@ ${originalContent}
                                 textContainer.setAttribute('data-content', textContainer.textContent);
 
 
+
+
                                 const copyBtn = document.createElement('button');
                                 copyBtn.className = `copy-enhancement-btn ${buttonBaseClass} font-medium py-1 px-3 rounded-lg flex items-center transition duration-150 text-sm flex-shrink-0`; 
                                 copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg> Copy';
@@ -1185,6 +1328,8 @@ ${originalContent}
                                 copyBtn.addEventListener('click', () => {
                                     copyToClipboard(textContainer.getAttribute('data-content'), copyBtn);
                                 });
+
+
 
 
                                 li.appendChild(textContainer);
@@ -1207,14 +1352,20 @@ ${originalContent}
             });
 
 
+
+
             regenerateContentBtn.addEventListener('click', (e) => {
                 generateContent(e);
             });
 
 
+
+
             copyTranslatedBtn.addEventListener('click', () => {
                 copyToClipboard(translatedContent.textContent, copyTranslatedBtn);
             });
+
+
 
 
             // Listener for translation radio buttons
@@ -1238,6 +1389,8 @@ ${originalContent}
             });
 
 
+
+
             /**
              * Setup enhancement button listeners, differentiating between primary and translated sources.
              * @param {NodeListOf<Element>} buttons - The buttons to attach listeners to.
@@ -1254,11 +1407,15 @@ ${originalContent}
             }
 
 
+
+
             // Setup for primary buttons (always use generatedContent)
             setupEnhancementListeners(enhancementBtns, 'primary'); 
             
             // Setup for translated buttons (always use translatedContent)
             setupEnhancementListeners(translatedEnhancementBtns, 'translated'); 
+
+
 
 
             // Modal control functions
@@ -1278,9 +1435,13 @@ ${originalContent}
             }
 
 
+
+
             closeModalBtn.addEventListener('click', () => {
                 enhancementModal.classList.add('opacity-0', 'pointer-events-none');
             });
+
+
 
 
             enhancementModal.addEventListener('click', (e) => {
@@ -1297,13 +1458,21 @@ ${originalContent}
 
 
 
+
+
+
+
             // Attach the main generation function to the form
             form.addEventListener('submit', generateContent);
+
+
 
 
             // Main generation function
             async function generateContent(e) {
                 if (e && e.preventDefault) e.preventDefault();
+
+
 
 
                 // Reset UI states
@@ -1313,6 +1482,8 @@ ${originalContent}
                 translatedEnhancementSection.classList.add('hidden'); 
                 enhancementBtns.forEach(btn => btn.disabled = true); 
                 translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
+
+
 
 
                 // 1. Show Loading State
@@ -1325,14 +1496,19 @@ ${originalContent}
                 regenerateContentBtn.disabled = true;
 
 
-                const apiKey = ""; // Canvas will automatically provide the key
+                // Use the key provided in the login form or from local storage
+                const apiKey = window.apiKeyOverride || "";
                 const model = 'gemini-2.5-flash-preview-05-20';
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+
 
 
                 // 2. Collect Form Data and Toggle States
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
+
+
 
 
                 // FIX: Explicitly retrieve the checked value for all radio button groups to ensure robustness
@@ -1343,6 +1519,8 @@ ${originalContent}
                 data.outputLevel = document.querySelector('input[name="outputLevel"]:checked')?.value;
 
 
+
+
                 const wordLimit = WORD_LIMITS[data.outputLevel] || 400;
                 const includeEmoji = document.getElementById('toggle-emoji').checked;
                 const includeHash = document.getElementById('toggle-hash').checked;
@@ -1351,6 +1529,10 @@ ${originalContent}
                 const toneDetails = TONE_INSTRUCTIONS[selectedToneKey];
                 const toneStyleInstruction = toneDetails ? toneDetails.style : "General sales tone, smooth and compelling writing style.";
                 const toneFocusInstruction = toneDetails ? toneDetails.focus : "Focus on general real estate appeal.";
+
+
+
+
 
 
 
@@ -1367,6 +1549,7 @@ ${originalContent}
                     generatedContentSystemPrompt += " If the user enables Hash Tags, include 3-5 relevant hashtags at the end of the content.";
                 }
 
+
                 // Burmese instructions for Emojis/Hashtags - ensure they instruct the AI to comply with the toggle state.
                 const emojiInstruction = includeEmoji ? "သဘာဝကျပြီး ဆွဲဆောင်မှုရှိသော Emojis များကို **၁၀ လုံးမှ ၃၅ လုံးအတွင်း** content အရေးအသား အသုံးနှုန်းပေါ်မူတည်ပြီး ချိန်ဆ၍ ထည့်သွင်းပါ။" : "Emojis များ လုံးဝမထည့်ရ။";
                 const hashInstruction = includeHash ? "အဆုံးတွင် သက်ဆိုင်ရာ Hash Tags ၃-၅ ခု ထည့်သွင်းပါ။" : "Hash Tags များ လုံးဝမထည့်ရ။";
@@ -1374,6 +1557,7 @@ ${originalContent}
                 // CRITICAL FIX FOR LANGUAGE OPTION: Use the selected language variable in the prompt
                 const userQuery = `
                 GENERATE the advertisement content strictly in the **${data.languageOption} language** and adhere to the following instructions.
+
 
                 ## အချက်အလက်များ:
                 - Real Estate Name: ${data.realEstateName || 'Not specified'}
@@ -1408,11 +1592,15 @@ ${originalContent}
                 };
 
 
+
+
                 const options = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload_)
                 };
+
+
 
 
                 // 5. Call API
@@ -1423,6 +1611,8 @@ ${originalContent}
                     const candidate = result.candidates?.[0];
 
 
+
+
                     if (candidate && candidate.content?.parts?.[0]?.text) {
                         const text = candidate.content.parts[0].text;
                         generatedContent.textContent = cleanGeneratedText(text); // Apply cleaning filter
@@ -1431,8 +1621,12 @@ ${originalContent}
                         enhancementBtns.forEach(btn => btn.disabled = false);
 
 
+
+
                         // Disable translated enhancement buttons initially
                         translatedEnhancementBtns.forEach(btn => btn.disabled = true);
+
+
 
 
                         // Extract Grounding Sources
@@ -1443,6 +1637,7 @@ ${originalContent}
                         sourcesArea.classList.add('hidden');
                         sourceList.innerHTML = '';
 
+
                         // FIX: Changed groundingAttributions reference to groundingMetadata.groundingAttributions
                         if (groundingMetadata && groundingMetadata.groundingAttributions) {
                             sources = groundingMetadata.groundingAttributions
@@ -1451,6 +1646,8 @@ ${originalContent}
                                     title: attribution.web?.title,
                                 }))
                                 .filter(source => source.uri && source.title);
+
+
 
 
                             if (sources.length > 0) {
@@ -1470,11 +1667,15 @@ ${originalContent}
                         }
 
 
+
+
                     } else {
                         generatedContent.textContent = 'Error generating content. AI could not produce content.';
                         enhancementBtns.forEach(btn => btn.disabled = true);
                         translatedEnhancementBtns.forEach(btn => btn.disabled = true);
                     }
+
+
 
 
                 } catch (error) {
@@ -1492,7 +1693,8 @@ ${originalContent}
             }
 
 
+
+
         </script>
     </body>
     </html>
-
