@@ -739,24 +739,20 @@
                 text = text.replace(/\*([^\*]+)\*/g, '$1');     // *text*
 
 
-                // 2. Remove backslashes used to escape hashtags and other characters
-                text = text.replace(/\\#/g, '#');
-                text = text.replace(/\\([*#])/g, '$1'); // Remove backslash before # or *
-
+                // 2. Remove backslashes used to escape other characters
+                text = text.replace(/\\([*#])/g, '$1'); // Remove backslash before * or #
 
                 // 3. Remove standalone '***', '---' or similar separators that AI sometimes adds between sections
                 text = text.replace(/(\n\s*)[-*_]{3,}(\s*\n)/g, '\n\n'); 
 
 
-                // 4. Remove standalone hashtag lines (if AI ignores instructions)
-                text = text.replace(/\n\s*#[\w\u1000-\u109F]+\s*(#[\w\u1000-\u109F]+\s*)*/gi, '');
-                
-                // 5. Remove leading numbering (e.g., 1., 2., 1., 2) (New requirement for enhancement modal content)
-                // Added \s* to handle spacing after numbering, ensuring it removes the number cleanly.
+                // 4. Remove leading numbering (e.g., 1., 2., 1., 2) (Used primarily for cleaning modal content, but kept generic)
                 text = text.replace(/^[0-9]+\.\s*/gm, ''); // Remove numbering followed by period and space at start of line
                 text = text.replace(/^[0-9]+\s*/gm, ''); // Remove numbering followed by space at start of line (less common, but catches some formats)
 
 
+                // 5. CRITICAL FIX: DO NOT remove hashtag lines if they are not escaped. (Removed the faulty hashtag removal logic)
+                
                 // 6. Remove remaining line breaks at the end
                 text = text.trim(); 
 
@@ -769,7 +765,7 @@
                 // Use the globally stored key. If it's empty, the environment injection takes over.
                 const apiKey = window.apiKeyOverride || ""; 
                 
-                const model = 'gemini-2.5-flash-preview-05-20';
+                const model = 'gemini-2.5-flash-preview-09-2025'; // UPDATED MODEL
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
 
@@ -1250,7 +1246,7 @@ ${originalContent}
                     return;
                 }
                 
-                const model = 'gemini-2.5-flash-preview-05-20';
+                const model = 'gemini-2.5-flash-preview-09-2025'; // UPDATED MODEL
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
 
@@ -1278,48 +1274,47 @@ ${originalContent}
 
 
                 // 3. Construct the System Instruction and User Prompt
-                // CRITICAL UPDATE: Update System Prompt for Burmese language quality and research focus
-                let generatedContentSystemPrompt = `You are a World-Class Real Estate Copywriting Specialist. Your primary goal is to generate compelling, high-quality, and market-ready marketing content for a real estate property. **The final output language MUST strictly match the language specified in the user's primary instruction (e.g., 'English', 'Thai').** When writing in Burmese (မြန်မာ), ensure the language is highly polished, professional, culturally appropriate, and uses fluent, native-sounding sentence structure (အရေးအသား ပြေပြစ်ကောင်းမွန်ရမည်). The output must strictly adhere to the requested Tone of Voice and word limit. You must use the writing style: **${toneStyleInstruction}**. Focus on: **${toneFocusInstruction}**. You are allowed to use Google Search (grounding) to ensure your facts about developers, locations, and market trends are accurate. The generated content MUST be approximately ${wordLimit} words long. Structure the output clearly, avoiding repetitive phrases. Output must not contain any markdown formatting like ** or *** or bullet points.`;
+                
+                // Conditionally include the Burmese language quality instruction
+                let languageSpecificInstruction = "";
+                if (data.languageOption === 'Burmese') {
+                    languageSpecificInstruction = " When writing in Burmese (မြန်မာ), ensure the language is highly polished, professional, culturally appropriate, and uses fluent, native-sounding sentence structure (အရေးအသား ပြေပြစ်ကောင်းမွန်ရမည်).";
+                }
+
+                let generatedContentSystemPrompt = `You are a World-Class Real Estate Copywriting Specialist. Your primary goal is to generate compelling, high-quality, and market-ready marketing content for a real estate property. **The final output language MUST strictly match the language specified in the user's primary instruction (e.g., 'English', 'Thai', 'Burmese').**${languageSpecificInstruction} The output must strictly adhere to the requested Tone of Voice and word limit. You must use the writing style: **${toneStyleInstruction}**. Focus on: **${toneFocusInstruction}**. You are allowed to use Google Search (grounding) to ensure your facts about developers, locations, and market trends are accurate. The generated content MUST be approximately ${wordLimit} words long. Structure the output clearly, avoiding repetitive phrases. Output must not contain any markdown formatting like ** or *** or bullet points.`;
                 
                 // Add instructions only if toggles are ON.
                 if (includeEmoji) {
-                    generatedContentSystemPrompt += " If the user enables Emojis, use 10 to 35 high-quality, relevant, and balanced emojis that significantly enhance the text, avoiding overuse. The actual count should be proportional to the word count and tone (e.g., more emojis for shorter, sales-focused content).";
+                    // CRITICAL FIX: Increased emphasis and set clearer range for emoji count.
+                    generatedContentSystemPrompt += " Since the user enabled Emojis, you MUST include 15 to 30 high-quality, relevant, and balanced emojis that significantly enhance the text. Do not overuse, but ensure the count is within this range and appropriate for the content length and tone.";
+                } else {
+                    generatedContentSystemPrompt += " Emojis must be strictly excluded from the output.";
                 }
+
                 if (includeHash) {
-                    generatedContentSystemPrompt += " If the user enables Hash Tags, include 3-5 relevant hashtags at the end of the content.";
+                    // CRITICAL FIX: Increased emphasis and ensured placement at the very end.
+                    generatedContentSystemPrompt += " Since the user enabled Hash Tags, you MUST include 5 to 8 highly relevant hashtags at the ABSOLUTE END of the content, separated by spaces.";
+                } else {
+                    generatedContentSystemPrompt += " Hashtags must be strictly excluded from the output.";
                 }
 
-
-                // Burmese instructions for Emojis/Hashtags - ensure they instruct the AI to comply with the toggle state.
-                const emojiInstruction = includeEmoji ? "သဘာဝကျပြီး ဆွဲဆောင်မှုရှိသော Emojis များကို **၁၀ လုံးမှ ၃၅ လုံးအတွင်း** content အရေးအသား အသုံးနှုန်းပေါ်မူတည်ပြီး ချိန်ဆ၍ ထည့်သွင်းပါ။" : "Emojis များ လုံးဝမထည့်ရ။";
-                const hashInstruction = includeHash ? "အဆုံးတွင် သက်ဆိုင်ရာ Hash Tags ၃-၅ ခု ထည့်သွင်းပါ။" : "Hash Tags များ လုံးဝမထည့်ရ။";
                 
-                // CRITICAL FIX FOR LANGUAGE OPTION: Use the selected language variable in the prompt
+                // CLEANED USER QUERY: Removed distracting Burmese headings and instructions.
                 const userQuery = `
-                GENERATE the advertisement content strictly in the **${data.languageOption} language** and adhere to the following instructions.
+                GENERATE the advertisement content strictly in the **${data.languageOption} language** using the data below, adhering to the System Instructions provided for tone and length.
 
-
-                ## အချက်အလက်များ:
                 - Real Estate Name: ${data.realEstateName || 'Not specified'}
                 - Target Audience: ${data.targetAudience || 'Not specified'}
                 - Project Name: ${data.projectName || 'Not specified'}
                 - Property Type: ${data.propertyType}
                 - Developer: ${data.developerName || 'Not specified'}
                 - Highlight Location: ${data.highlightLocation || 'Not specified'}
-                - - Size/Rooms: ${data.sizeRooms || 'Not specified'}
+                - Size/Rooms: ${data.sizeRooms || 'Not specified'}
                 - Facilities/Features: ${data.facilities || 'Not specified'}
                 - Price Information: ${data.priceInfo || 'Not specified'}
                 - Selling Point (Highlight): ${data.sellingPoint || 'Not specified'}
                 - Condition: ${data.conditional}
                 - Tone of Voice: ${data.toneOfVoice}
-                
-                ## အပိုဆောင်းညွှန်ကြားချက်များ:
-                - Emoji: ${emojiInstruction}
-                - Hash Tags: ${hashInstruction}
-                - Formatting: output စာသားတွင် စာစဥ်နံပါတ် (numbered list) သို့မဟုတ် **၊ *** ၊ # စသော အမှတ်အသားများ လုံးဝမထည့်ရ။ **မြန်မာဘာသာစကားဖြင့် ရေးသားပါက၊ အရေးအသားပြေပြစ်ကောင်းမွန်ပြီး၊ သဘာဝကျသော စာလုံးအသုံးအနှုန်းများကိုသာ အသုံးပြုပါ။**
-                
-                ## လိုအပ်ချက်:
-                ကျေးဇူးပြု၍ ပေးထားသည့် **'ပြောဆိုဟန်'** နှင့် **'အလျားအတိုင်းအတာ'** တို့နှင့်အညီ အကောင်းဆုံး၊ အဆွဲဆောင်နိုင်ဆုံး ကြော်ငါစာသားကိုသာ တိုက်ရိုက်ပြန်လည်ဖြေကြားပေးပါ။
                 `;
                 
                 // 4. API Payload (already constructed)
