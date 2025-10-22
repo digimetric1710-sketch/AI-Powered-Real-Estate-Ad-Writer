@@ -4,41 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI-Powered Real Estate Ad Writer</title>
-    <!-- Load Firebase libraries for Authentication and Firestore -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // --- MANDATORY FIREBASE CONFIG & GLOBAL SETUP ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-        // FIX: Changed 'initialAuthToken' reference to the correct global variable '__initial_auth_token'
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null; 
-        
-        window.firebaseApp = firebaseConfig ? initializeApp(firebaseConfig) : null;
-        window.auth = window.firebaseApp ? getAuth(window.firebaseApp) : null;
-        window.db = window.firebaseApp ? getFirestore(window.firebaseApp) : null;
-        window.initialAuthToken = initialAuthToken;
-
-
-        // Simplified Sign-In Logic (now only signs in anonymously as fallback after user input)
-        window.authenticateFirebase = async () => {
-            if (window.auth) {
-                try {
-                    // We only sign in anonymously here as the user has already provided credentials
-                    await signInAnonymously(window.auth);
-                    console.log("Firebase initialized and signed in anonymously for session context.");
-                } catch (error) {
-                    console.error("Firebase Auth failed during anonymous sign-in:", error);
-                }
-                return true;
-            }
-            return false;
-        };
-        // --- END MANDATORY FIREBASE CONFIG & GLOBAL SETUP ---
-    </script>
-
-
+    
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Configure Tailwind for custom colors and font -->
@@ -50,28 +16,23 @@
             color: #e5e5e5; /* Light Gray/Near White text */
         }
         
-        /* --- NEW MONOCHROME GREEN PALETTE (#00b894) --- */
-        /* Define the Primary Accent Color (Mint Green/Teal) */
+        /* --- MONOCHROME GREEN PALETTE (#00b894) --- */
         .color-accent {
             color: #00b894; 
         }
-        /* Secondary color is now a lighter shade of the primary color for contrast */
         .color-secondary {
             color: #38c7ac; /* Lighter Green */
         }
-        
-        /* --- Login Card Styling --- */
+
+        /* --- Login Card Styling --- (RE-ADDED) */
         #login-overlay {
-            background-color: #0c0c0c;
+            background-color: rgba(12, 12, 12, 0.95); /* Semi-transparent dark overlay */
             z-index: 100;
         }
-        .login-card {
+        .modal-content {
             background-color: #1a1a1a;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 0 1px #333;
             border-radius: 1.5rem;
-            padding: 2.5rem;
-            max-width: 400px;
-            width: 90%;
         }
         .login-input-field {
             background-color: #222;
@@ -86,25 +47,8 @@
             outline: none;
             box-shadow: 0 0 0 2px rgba(0, 184, 148, 0.4); 
         }
-        .login-button {
-            background-color: #00b894;
-            color: #000;
-            font-weight: bold;
-            border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem;
-            transition: background-color 0.2s, opacity 0.2s;
-        }
-        .login-button:hover:not(:disabled) {
-            background-color: #38c7ac;
-        }
-        .login-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
         
-        /* --- App Form/Input Styling (Main App) --- */
-
-
+        /* --- App Form/Input Styling --- (Existing) */
         .input-field, select {
             background-color: #151515; 
             border: 1px solid #333333;
@@ -199,10 +143,9 @@
         /* --- END NEW BUTTON STYLING --- */
 
 
-
-
         /* Custom Modal Styles */
         .modal-content {
+            /* Kept for login and enhancement modal styling consistency */
             background-color: #1a1a1a;
         }
         /* Loading Spinner Color */
@@ -213,53 +156,45 @@
 </head>
 <body>
 
-
-    <!-- Login Overlay -->
+    <!-- START: Login Overlay (RE-ADDED) -->
     <div id="login-overlay" class="fixed inset-0 flex items-center justify-center transition-opacity duration-300 opacity-100 z-50">
-        <div class="login-card">
-            <header class="text-center mb-6">
+        <div class="modal-content shadow-2xl rounded-xl p-8 max-w-sm w-full text-center">
+            <header class="mb-6">
                 <h1 class="text-3xl font-extrabold mb-1 color-accent">Digimetric</h1>
-                <!-- CHANGED: Title from "AI-Powered Content Writer" to "AI-Powered Real Estate AdWriter" -->
-                <h2 class="text-xl font-bold text-gray-300">AI-Powered Real Estate AdWriter</h2>
+                <h2 class="text-xl font-bold text-gray-300">API Key Login</h2>
             </header>
             
-            <div class="mb-6 text-center">
-                <!-- UPDATED: Removed password reference -->
-                <h3 class="text-lg font-semibold color-secondary mb-1">Log in with API Key</h3>
-                <p class="text-sm text-gray-400">Please enter your **API Key** to use the application.</p>
-            </div>
-
-
+            <!-- Removed the unwanted Burmese text line -->
+            
             <form id="login-form" class="space-y-4">
                 <!-- Gemini API Key Input -->
                 <div>
-                    <label for="apiKey" class="block text-sm font-medium mb-1">Gemini API Key</label>
+                    <label for="apiKey" class="block text-sm font-medium mb-1 text-left">Gemini API Key</label>
                     <input type="text" id="apiKey" name="apiKey" class="login-input-field w-full" placeholder="Enter API Key" required>
                 </div>
-                <!-- REMOVED: Password Input -->
-
 
                 <div id="login-message" class="text-sm text-center text-red-400 hidden"></div>
                 
-                <button type="submit" class="login-button w-full">Log In</button>
+                <button type="submit" class="bg-output-control hover-bg-output-control text-black font-bold py-2 px-4 rounded-lg w-full transition duration-150">
+                    Log In
+                </button>
             </form>
         </div>
     </div>
-    <!-- End Login Overlay -->
-
-
+    <!-- END: Login Overlay -->
 
 
     <!-- Main App Container (Hidden until logged in) -->
     <div id="app-container" class="max-w-4xl mx-auto p-6 md:p-10 opacity-0 pointer-events-none transition-opacity duration-300">
         <!-- Header -->
         <header class="relative mb-10">
-            <!-- Log Out Button (Top Right Corner) -->
+            <!-- START: Log Out Button (RE-ADDED) -->
             <button id="logout-button" class="absolute top-0 right-0 text-sm py-1 px-3 rounded-lg bg-gray-700 text-gray-300 hover:bg-red-600 hover:text-white transition duration-150 flex items-center shadow-lg">
                 <span class="hidden sm:inline">Log Out</span>
                 <!-- Icon for Logout -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline sm:ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3v-4a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
             </button>
+            <!-- END: Log Out Button -->
             
             <div class="text-center">
                 <h1 class="text-4xl font-extrabold mb-1 color-accent">Digimetric</h1>
@@ -267,8 +202,6 @@
                 <h2 class="text-2xl font-bold color-secondary tracking-wider">AI-Powered Real Estate AdWriter</h2>
             </div>
         </header>
-
-
 
 
         <!-- Main Form Container -->
@@ -288,12 +221,8 @@
             </div>
 
 
-
-
             <!-- Project Information Section Title -->
             <h3 class="text-2xl font-bold color-accent pt-4 border-b border-gray-700 pb-2">Project Information</h3>
-
-
 
 
             <!-- Section 2: Project Details (Layout modified to move Property Type below Project Name input field) -->
@@ -342,8 +271,6 @@
                 </div>
 
 
-
-
                 <!-- Size / Rooms -->
                 <div>
                     <label for="sizeRooms" class="block text-sm font-medium mb-2">Size / Rooms</label>
@@ -354,8 +281,6 @@
                     <label for="facilities" class="block text-sm font-medium mb-2">Facilities / Features</label>
                     <input type="text" id="facilities" name="facilities" class="input-field w-full" placeholder="(e.g., Gym, Pool, Co-working Space)">
                 </div>
-
-
 
 
                 <!-- Price Information -->
@@ -371,15 +296,13 @@
             </div>
 
 
-
-
             <!-- Section 3: Language & Tone (Stays stacked vertically) -->
             <div class="space-y-8 pt-4"> 
                 <!-- Language Option Button Group -->
                 <div class="button-group">
                     <label class="block text-sm font-medium mb-2">Language Option</label>
                     <div class="grid grid-cols-3 gap-2 text-sm">
-                        <!-- Language Radios (FIX: Changing value to English for LLM clarity) -->
+                        <!-- Language Radios -->
                         <input type="radio" id="lang-my" name="languageOption" value="Burmese" class="hidden" checked>
                         <label for="lang-my" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Burmese</label>
                         
@@ -401,8 +324,6 @@
                 </div>
 
 
-
-
                 <!-- Tone of Voice Button Group -->
                 <div class="button-group">
                     <label class="block text-sm font-medium mb-2">Tone of Voice</label>
@@ -413,8 +334,6 @@
                         
                         <input type="radio" id="tone-luxury" name="toneOfVoice" value="ခမ်းနားထည်ဝါ" class="hidden">
                         <label for="tone-luxury" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Luxury</label>
-
-
 
 
                         <input type="radio" id="tone-pro" name="toneOfVoice" value="ကျွမ်းကျင်ပညာရှင်ဆန်" class="hidden">
@@ -439,8 +358,6 @@
             </div>
 
 
-
-
             <!-- Section 4: Conditional -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
                 <!-- Conditional Button Group (Takes full width on MD screens) -->
@@ -458,10 +375,7 @@
                         <label for="cond-new" class="py-3 px-3 rounded-lg text-gray-300 border-gray-600">New Project</label>
                     </div>
                 </div>
-                <!-- Reference URL and File Upload inputs were here and are now removed -->
             </div>
-
-
 
 
             <!-- Section 5: Output Level (Word limits removed from label, kept in value) -->
@@ -487,8 +401,6 @@
                 </div>
 
 
-
-
                 <!-- Section 6: Generate Button and Toggles -->
                 <div class="flex justify-center items-stretch gap-4 pt-8">
                     <!-- Toggle 1: Emoji -->
@@ -498,15 +410,11 @@
                     </div>
 
 
-
-
                     <!-- Toggle 2: Hash Tag -->
                     <div class="button-group w-1/5 max-w-[80px]">
                         <input type="checkbox" id="toggle-hash" name="toggleHash" class="hidden" checked>
                         <label for="toggle-hash" class="py-3 px-3 rounded-xl border-gray-600 text-3xl font-mono transition duration-150 flex items-center justify-center h-full hover:bg-[#3d3d3d]">#</label>
                     </div>
-
-
 
 
                     <!-- Generate Content Button (Wider) -->
@@ -516,11 +424,7 @@
                 </div>
 
 
-
-
             </form>
-
-
 
 
             <!-- Output Area (Hidden initially) -->
@@ -534,8 +438,6 @@
                     <p class="mt-2 text-gray-400">AI is generating content. Please wait...</p>
                 </div>
                 <div id="generated-content" class="whitespace-pre-wrap text-gray-200"></div>
-
-
 
 
                 <!-- Primary Output Controls (Copy & Regenerate) -->
@@ -562,8 +464,6 @@
                 </div>
 
 
-
-
                 <!-- PRIMARY Content Enhancement Section (Uses Generated Content) -->
                 <div id="enhancement-section" class="mt-8 pt-4 border-t border-gray-700">
                     <h4 class="text-lg font-bold mb-3 color-accent">Content Enhancement</h4> <!-- (မူရင်း) removed -->
@@ -588,7 +488,7 @@
                     <div class="button-group">
                         <label class="block text-sm font-medium mb-2">Select Target Language</label>
                         <div id="translate-language-options" class="grid grid-cols-3 md:grid-cols-6 gap-2 text-sm">
-                            <!-- Translation Radios (FIX: Changing value to English for LLM clarity) -->
+                            <!-- Translation Radios -->
                             <input type="radio" id="translate-my" name="translateLanguage" value="Burmese" class="hidden">
                             <label for="translate-my" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Burmese</label>
                             
@@ -608,8 +508,6 @@
                             <label for="translate-ko" class="py-2 px-3 rounded-lg text-gray-300 border-gray-600">Korean</label>
                         </div>
                     </div>
-
-
 
 
                     <!-- Translated Content Output Area -->
@@ -649,11 +547,7 @@
                     <!-- END TRANSLATED Content Enhancement Section -->
 
 
-
-
                 </div>
-
-
 
 
                 <div id="sources-area" class="mt-4 pt-4 border-t border-gray-700 text-sm text-gray-500 hidden">
@@ -663,8 +557,6 @@
             </div>
             <!-- End Output Area -->
         </div>
-
-
 
 
         <!-- Modal for Captions/Headlines/Hashtags -->
@@ -691,174 +583,17 @@
         <!-- End Modal -->
 
 
-
-
         <script>
-            // --- LOGIN CONSTANTS (DUMMY AUTH) ---
-            // NEW: Local storage key for persistence
-            const STORAGE_KEY = 'geminiApiKey';
-            const VALID_API_KEY = null; 
-            // REMOVED: const VALID_PASSWORD = "digimetric@reAd"; 
+            // --- NEW LOGIN CONSTANTS ---
+            const STORAGE_KEY = 'geminiApiKeyOverride'; 
+            window.apiKeyOverride = localStorage.getItem(STORAGE_KEY) || ""; // Global variable to store the key
             
-            // Global variable to store the user-provided API key for network calls
-            window.apiKeyOverride = ""; 
-            // --- END LOGIN CONSTANTS ---
-
-
             const loginOverlay = document.getElementById('login-overlay');
             const loginForm = document.getElementById('login-form');
             const appContainer = document.getElementById('app-container');
             const loginMessage = document.getElementById('login-message');
-            // REMOVED password-related variables: passwordInput, togglePasswordButton, eyeOpenIcon, eyeClosedIcon
             const logoutButton = document.getElementById('logout-button');
-
-
-            // REMOVED Toggle password visibility logic
-            
-            function showApp() {
-                // Ensure login overlay is hidden.
-                loginOverlay.style.opacity = '0';
-                loginOverlay.style.pointerEvents = 'none';
-                loginOverlay.classList.remove('opacity-100'); 
-                
-                // Make app container visible.
-                appContainer.classList.remove('opacity-0', 'pointer-events-none');
-            }
-            
-            function handleLogout() {
-                console.log("Logging out...");
-                
-                // 1. Clear stored API Key from Local Storage
-                localStorage.removeItem(STORAGE_KEY); 
-
-
-                // 2. Clear runtime Key
-                window.apiKeyOverride = "";
-
-
-                // 3. Clear login form inputs for security/privacy
-                document.getElementById('apiKey').value = '';
-                // REMOVED: document.getElementById('password').value = '';
-                loginMessage.textContent = '';
-                loginMessage.classList.add('hidden');
-                
-                // 4. Hide App Container
-                appContainer.classList.add('opacity-0', 'pointer-events-none');
-                
-                // 5. Show Login Overlay
-                loginOverlay.style.opacity = '1';
-                loginOverlay.style.pointerEvents = 'auto';
-                loginOverlay.classList.add('opacity-100');
-            }
-
-
-            // Attach Logout Handler
-            if (logoutButton) {
-                logoutButton.addEventListener('click', handleLogout);
-            }
-
-
-            // --- NEW: INITIAL LOAD CHECK FOR PERSISTENCE ---
-            if (window.authenticateFirebase) {
-                window.addEventListener('load', async () => {
-                    const storedApiKey = localStorage.getItem(STORAGE_KEY);
-                    
-                    if (storedApiKey) {
-                        window.apiKeyOverride = storedApiKey;
-                        
-                        // Try to authenticate silently
-                        const authReady = await window.authenticateFirebase();
-                        
-                        if (authReady && window.auth && window.auth.currentUser) {
-                            console.log("Found stored API key. Automatic sign-in successful. Showing app.");
-                            showApp();
-                            return; // Stop here, app is shown
-                        } else {
-                            // Auth failed with stored key (e.g., token expired), force relogin
-                            console.log("Stored API key found but authentication failed. Forcing re-login.");
-                            localStorage.removeItem(STORAGE_KEY);
-                            window.apiKeyOverride = "";
-                        }
-                    }
-                    
-                    // If not automatically signed in, show the login screen.
-                    loginOverlay.classList.remove('opacity-0', 'pointer-events-none');
-                });
-            }
-            // --- END NEW INITIAL LOAD CHECK ---
-
-
-            
-            // Handle login form submission
-            if (loginForm) {
-                loginForm.addEventListener('submit', async (e) => { // Made the function async
-                    e.preventDefault();
-                    
-                    const apiKey = document.getElementById('apiKey').value.trim();
-                    // REMOVED: const password = document.getElementById('password').value.trim();
-                    const loginButton = loginForm.querySelector('.login-button');
-                    
-                    loginMessage.textContent = '';
-                    loginMessage.classList.add('hidden');
-                    loginButton.disabled = true;
-                    loginButton.textContent = 'Verifying...';
-
-
-                    // --- AUTH CHECK (Only checking API Key presence now) ---
-                    // 1. Check if API Key is provided
-                    if (!apiKey) {
-                        loginMessage.textContent = 'API Key is required.';
-                        loginMessage.classList.remove('hidden');
-                        loginButton.disabled = false;
-                        loginButton.textContent = 'Log In';
-                        return;
-                    }
-                    
-                    // REMOVED: Password check (if (password !== VALID_PASSWORD) ...)
-
-
-                    // 2. If valid, store the user's API Key and proceed with Firebase sign-in
-                    window.apiKeyOverride = apiKey;
-
-
-                    try {
-                        console.log("Login successful locally. Attempting Firebase auth...");
-                        
-                        // Call the authenticateFirebase function again to ensure session context is established
-                        const authSuccess = await window.authenticateFirebase();
-                        
-                        if (authSuccess) {
-                            console.log("Firebase Auth successful. Showing app.");
-                            
-                            // NEW: Save API key to localStorage for persistence
-                            localStorage.setItem(STORAGE_KEY, apiKey); 
-
-
-                            loginButton.textContent = 'Success!';
-                            loginButton.style.backgroundColor = '#4CAF50'; // Temporarily change to green success
-                            
-                            // FIX: Directly call showApp after successful (local and Firebase) checks
-                            showApp();
-                        } else {
-                            // Should not happen if anonymous sign-in succeeds, but kept for robustness
-                            throw new Error("Firebase authentication could not be completed.");
-                        }
-                        
-                    } catch (error) {
-                        console.error("Full Login Process Failed:", error);
-                        loginMessage.textContent = `Login Failed: ${error.message || 'Please check your connection and API Key.'}`;
-                        loginMessage.classList.remove('hidden');
-                        
-                        // Reset button state on failure
-                        loginButton.disabled = false;
-                        loginButton.textContent = 'Log In';
-                        loginButton.style.backgroundColor = '#00b894'; // Reset button color
-                    }
-                });
-            }
-
-
-            // --- MAIN APP LOGIC (Rest of the script remains unchanged) ---
+            const apiKeyInput = document.getElementById('apiKey');
 
 
             const form = document.getElementById('ad-writer-form');
@@ -866,11 +601,6 @@
             const generatedContent = document.getElementById('generated-content');
             const loadingSpinner = document.getElementById('loading-spinner');
             const generateButton = document.getElementById('generate-button');
-            // REMOVED: const fileUploadInput = document.getElementById('fileUpload');
-            // REMOVED: const fileUploadText = document.getElementById('file-upload-text');
-
-
-
 
             const copyContentBtn = document.getElementById('copy-content-btn');
             const regenerateContentBtn = document.getElementById('regenerate-content-btn');
@@ -894,8 +624,6 @@
             const translatedEnhancementBtns = document.querySelectorAll('.translated-enhancement-btn');
 
 
-
-
             const WORD_LIMITS = {
                 "အတိုချုပ် (Short) - World Limit 200": 200,
                 "အလယ်အလတ် (Medium) - World Limit 320": 320,
@@ -903,8 +631,6 @@
                 "ကျယ်ကျယ်ပြန့်ပြန့် (Extended) - World Limit 550": 550,
                 "ပြည့်စုံလုံလောက် (Comprehensive) - World Limit 750": 750
             };
-
-
 
 
             const TONE_INSTRUCTIONS = {
@@ -918,22 +644,6 @@
                 "အကြံပေးပညာရှင်": { style: "ကျွမ်းကျင်သူကဲ့သို့ သုံးသပ်ပြီး၊ သင့်တော်သော အကြံဉာဏ်များပေးသည့် လေသံ (Advisory, analytical, and expert opinion tone)။ ဝယ်ယူသူ၏ လိုအပ်ချက်နှင့် စျေးကွက်အခြေအနေကို ချိတ်ဆက်ကာ အသင့်တော်ဆုံးဖြေရှင်းချက်ကို ဖော်ပြပါ။", focus: "Market analysis, Personalized advice, Problem-solving. Use phrases like 'We recommend this due to...', 'Considering your goals...', 'Our analysis shows this is ideal...'." },
                 "စီးပွားရေးရှုထောင့်": { style: "ရင်းနှီးမြှုပ်နှံမှုနှင့် ငွေကြေးဆိုင်ရာ အကျိုးအမြတ်များကို အဓိကထားသည့် လေသံ (Financial, strategic, and ROI-focused tone)။ ဝင်ငွေ၊ အမြတ်အစွန်းနှင့် စီးပွားရေးအခွင့်အလမ်းများကို ဂဏန်းအချက်အလက်များဖြင့် တွဲဖက်ဖော်ပြပါ။", focus: "ROI, Rental Yield, Capital Appreciation, Strategic acquisition. Use financial terminology (e.g., 'High potential for growth', 'Maximize returns', 'asset diversification')." }
             };
-
-
-
-
-            // REMOVED: Mock File Upload Handler (and related variables)
-            // fileUploadInput.addEventListener('change', (event) => {
-            //     if (event.target.files.length > 0) {
-            //         fileUploadText.textContent = `${event.target.files.length} files selected.`;
-            //         fileUploadText.classList.add('text-green-500');
-            //     } else {
-            //         fileUploadText.textContent = 'Drop your files here';
-            //         fileUploadText.classList.remove('text-green-500');
-            //     }
-            // });
-
-
 
 
             // Helper function for copying text
@@ -986,16 +696,12 @@
                         }, 2000);
 
 
-
-
                     } catch (err) {
                         console.error('Copy failed:', err);
                     }
                     document.body.removeChild(textarea);
                 }
             }
-
-
 
 
             // Exponential Backoff implementation for retrying API calls
@@ -1060,12 +766,11 @@
 
             // Function to handle general text generation (for translation/enhancement)
             async function callGeminiApi(systemPrompt, userQuery) {
-                // Use the key provided in the login form or from local storage
-                const apiKey = window.apiKeyOverride || "";
+                // Use the globally stored key. If it's empty, the environment injection takes over.
+                const apiKey = window.apiKeyOverride || ""; 
+                
                 const model = 'gemini-2.5-flash-preview-05-20';
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-
 
 
                 const payload = {
@@ -1078,15 +783,11 @@
                 };
 
 
-
-
                 const options = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 };
-
-
 
 
                 const response = await fetchWithRetry(apiUrl, options);
@@ -1097,18 +798,16 @@
                 if (text) {
                     return text;
                 } else {
-                    throw new Error("AI did not produce valid content.");
+                    // Check if there is an error message in the response
+                    const errorMessage = result.error?.message || "AI did not produce valid content.";
+                    throw new Error(errorMessage);
                 }
             }
-
-
 
 
             // Function to handle translation API call
             async function translateContent(originalContent, targetLanguage) {
                 if (!originalContent) return;
-
-
 
 
                 // Reset translation UI
@@ -1119,8 +818,6 @@
                 // Hide translated enhancement section until successful
                 translatedEnhancementSection.classList.add('hidden'); 
                 translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
-
-
 
 
                 const systemPrompt = "You are a professional content translator. Translate the provided real estate advertisement text accurately into the specified language. Preserve the tone and intent, including any emojis or hashtags. Output must not contain any formatting markers like ** or *** or bullet points.";
@@ -1183,14 +880,10 @@ ${originalContent}
                 }
 
 
-
-
                 if (!sourceContent || sourceContent.trim() === '' || sourceContent.startsWith('Error')) {
                     showModal('Generation Error', 'Please generate the main advertisement content successfully first before requesting enhancements.', 'Error');
                     return;
                 }
-
-
 
 
                 modalTitle.classList.remove('text-red-400', 'color-accent', 'color-secondary');
@@ -1200,14 +893,10 @@ ${originalContent}
                 enhancementModal.classList.remove('opacity-0', 'pointer-events-none');
 
 
-
-
                 let systemPrompt = "You are a specialized Real Estate Marketing AI. Based on the provided advertisement copy, you must generate a list of short, punchy marketing pieces. Your output MUST be a numbered list of ONLY the requested items. Output must not contain any formatting markers like ** or *** or bullet points.";
                 let userQuery = '';
                 let titleText = '';
                 let count = 0;
-
-
 
 
                 switch (contentType) {
@@ -1233,12 +922,8 @@ ${originalContent}
                 }
 
 
-
-
                 modalTitle.textContent = titleText;
                 userQuery = userQuery + `\n\n--- Source Ad Content (${targetLanguage}) ---\n${sourceContent}`;
-
-
 
 
                 try {
@@ -1254,8 +939,6 @@ ${originalContent}
                     modalListContent.innerHTML = ''; // Clear previous content
 
 
-
-
                     if (items.length === 0) {
                         modalListContent.innerHTML = `<p class="text-gray-400">Could not generate ${contentType} ideas. Please check the source content.</p>`;
                     } else {
@@ -1263,8 +946,6 @@ ${originalContent}
                             // LOGIC for Hashtags: Join and show in a box
                             const cleanedItems = items
                                 .filter(item => item.startsWith('#')); // Ensure it's an actual hashtag (starts with #)
-
-
 
 
                             const allHashtags = cleanedItems.join(' '); 
@@ -1277,13 +958,9 @@ ${originalContent}
                             `;
 
 
-
-
                             // Add a listener to select text when clicking the textarea
                             const textArea = containerLi.querySelector('#all-hashtags-textarea');
                             textArea.addEventListener('click', () => textArea.select());
-
-
 
 
                             const copyAllBtn = document.createElement('button');
@@ -1297,12 +974,8 @@ ${originalContent}
                             });
 
 
-
-
                             modalListContent.appendChild(containerLi);
                             modalListContent.appendChild(copyAllBtn); // Appending button after the list item container
-
-
 
 
                         } else {
@@ -1318,8 +991,6 @@ ${originalContent}
                                 textContainer.setAttribute('data-content', textContainer.textContent);
 
 
-
-
                                 const copyBtn = document.createElement('button');
                                 copyBtn.className = `copy-enhancement-btn ${buttonBaseClass} font-medium py-1 px-3 rounded-lg flex items-center transition duration-150 text-sm flex-shrink-0`; 
                                 copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg> Copy';
@@ -1328,8 +999,6 @@ ${originalContent}
                                 copyBtn.addEventListener('click', () => {
                                     copyToClipboard(textContainer.getAttribute('data-content'), copyBtn);
                                 });
-
-
 
 
                                 li.appendChild(textContainer);
@@ -1346,12 +1015,10 @@ ${originalContent}
                 }
             }
             
-            // Event Listeners for new buttons/switches
+            // Event Listeners for buttons/switches
             copyContentBtn.addEventListener('click', () => {
                 copyToClipboard(generatedContent.textContent, copyContentBtn);
             });
-
-
 
 
             regenerateContentBtn.addEventListener('click', (e) => {
@@ -1359,13 +1026,9 @@ ${originalContent}
             });
 
 
-
-
             copyTranslatedBtn.addEventListener('click', () => {
                 copyToClipboard(translatedContent.textContent, copyTranslatedBtn);
             });
-
-
 
 
             // Listener for translation radio buttons
@@ -1389,8 +1052,6 @@ ${originalContent}
             });
 
 
-
-
             /**
              * Setup enhancement button listeners, differentiating between primary and translated sources.
              * @param {NodeListOf<Element>} buttons - The buttons to attach listeners to.
@@ -1407,15 +1068,11 @@ ${originalContent}
             }
 
 
-
-
             // Setup for primary buttons (always use generatedContent)
             setupEnhancementListeners(enhancementBtns, 'primary'); 
             
             // Setup for translated buttons (always use translatedContent)
             setupEnhancementListeners(translatedEnhancementBtns, 'translated'); 
-
-
 
 
             // Modal control functions
@@ -1435,13 +1092,9 @@ ${originalContent}
             }
 
 
-
-
             closeModalBtn.addEventListener('click', () => {
                 enhancementModal.classList.add('opacity-0', 'pointer-events-none');
             });
-
-
 
 
             enhancementModal.addEventListener('click', (e) => {
@@ -1456,23 +1109,112 @@ ${originalContent}
             translatedEnhancementBtns.forEach(btn => btn.disabled = true);
 
 
+            // --- Login/Logout Logic ---
+
+            function showApp() {
+                // Hide login overlay.
+                loginOverlay.style.opacity = '0';
+                loginOverlay.style.pointerEvents = 'none';
+                loginOverlay.classList.remove('opacity-100'); 
+                
+                // Make app container visible.
+                appContainer.classList.remove('opacity-0', 'pointer-events-none');
+            }
+            
+            function showLogin() {
+                // Fill the input field with the current (or old) key for convenience
+                apiKeyInput.value = window.apiKeyOverride;
+
+                // Show Login Overlay
+                loginOverlay.style.opacity = '1';
+                loginOverlay.style.pointerEvents = 'auto';
+                loginOverlay.classList.add('opacity-100');
+                
+                // Hide App Container
+                appContainer.classList.add('opacity-0', 'pointer-events-none');
+            }
 
 
+            function handleLogout() {
+                console.log("Logging out...");
+                
+                // 1. Clear stored API Key
+                localStorage.removeItem(STORAGE_KEY); 
 
+                // 2. Clear runtime Key
+                window.apiKeyOverride = "";
 
+                // 3. Reset UI messages
+                loginMessage.textContent = '';
+                loginMessage.classList.add('hidden');
+                
+                // 4. Show Login Screen
+                showLogin();
+            }
+
+            // Attach Logout Handler
+            if (logoutButton) {
+                logoutButton.addEventListener('click', handleLogout);
+            }
+
+            // --- INITIAL LOAD CHECK (Ensures persistence) ---
+            window.addEventListener('load', () => {
+                // Check if a valid-length key is stored
+                if (window.apiKeyOverride && window.apiKeyOverride.length > 5) {
+                    console.log("Found stored API key. Showing app.");
+                    showApp();
+                } else {
+                    console.log("No API key found. Showing login screen.");
+                    showLogin();
+                }
+            });
+
+            
+            // Handle login form submission
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => { 
+                    e.preventDefault();
+                    
+                    const newApiKey = apiKeyInput.value.trim();
+                    const loginButton = loginForm.querySelector('button[type="submit"]');
+                    
+                    loginMessage.textContent = '';
+                    loginMessage.classList.add('hidden');
+                    loginButton.disabled = true;
+                    loginButton.textContent = 'Log In'; // Show initial button text
+
+                    // --- AUTH CHECK (Only length check) ---
+                    if (!newApiKey || newApiKey.length < 5) {
+                        loginMessage.textContent = 'API Key မမှန်ကန်ပါ။ (အနည်းဆုံး စာလုံး ၅ လုံးရှိရပါမည်)';
+                        loginMessage.classList.remove('hidden');
+                        loginButton.disabled = false;
+                        loginButton.textContent = 'Log In';
+                        return;
+                    }
+
+                    // Assume the key is valid and save it
+                    window.apiKeyOverride = newApiKey;
+                    localStorage.setItem(STORAGE_KEY, newApiKey); 
+                    
+                    // Immediately show the app (NO SUCCESS MESSAGE)
+                    showApp();
+                    
+                    // Reset button state (though it's hidden now)
+                    loginButton.disabled = false;
+                    loginButton.textContent = 'Log In';
+                    loginButton.style.backgroundColor = ''; 
+                });
+            }
+            // --- End Login/Logout Logic ---
 
 
             // Attach the main generation function to the form
             form.addEventListener('submit', generateContent);
 
 
-
-
             // Main generation function
             async function generateContent(e) {
                 if (e && e.preventDefault) e.preventDefault();
-
-
 
 
                 // Reset UI states
@@ -1482,8 +1224,6 @@ ${originalContent}
                 translatedEnhancementSection.classList.add('hidden'); 
                 enhancementBtns.forEach(btn => btn.disabled = true); 
                 translatedEnhancementBtns.forEach(btn => btn.disabled = true); 
-
-
 
 
                 // 1. Show Loading State
@@ -1496,19 +1236,27 @@ ${originalContent}
                 regenerateContentBtn.disabled = true;
 
 
-                // Use the key provided in the login form or from local storage
-                const apiKey = window.apiKeyOverride || "";
+                // Get API Key from the global override if set, otherwise fallback to empty string for injection
+                const apiKey = window.apiKeyOverride || ""; 
+                
+                // CRITICAL CHECK: Enforce login before API call
+                if (!apiKey) {
+                    generatedContent.textContent = 'Error: API Key မရှိပါ။ ကျေးဇူးပြု၍ Log In ဝင်ပါ။';
+                    loadingSpinner.classList.add('hidden');
+                    generateButton.disabled = false;
+                    generateButton.textContent = 'Generate Content';
+                    regenerateContentBtn.disabled = false;
+                    showLogin(); // Show login screen if key is missing
+                    return;
+                }
+                
                 const model = 'gemini-2.5-flash-preview-05-20';
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-
-
 
 
                 // 2. Collect Form Data and Toggle States
                 const formData = new FormData(form);
                 const data = Object.fromEntries(formData.entries());
-
-
 
 
                 // FIX: Explicitly retrieve the checked value for all radio button groups to ensure robustness
@@ -1519,8 +1267,6 @@ ${originalContent}
                 data.outputLevel = document.querySelector('input[name="outputLevel"]:checked')?.value;
 
 
-
-
                 const wordLimit = WORD_LIMITS[data.outputLevel] || 400;
                 const includeEmoji = document.getElementById('toggle-emoji').checked;
                 const includeHash = document.getElementById('toggle-hash').checked;
@@ -1529,12 +1275,6 @@ ${originalContent}
                 const toneDetails = TONE_INSTRUCTIONS[selectedToneKey];
                 const toneStyleInstruction = toneDetails ? toneDetails.style : "General sales tone, smooth and compelling writing style.";
                 const toneFocusInstruction = toneDetails ? toneDetails.focus : "Focus on general real estate appeal.";
-
-
-
-
-
-
 
 
                 // 3. Construct the System Instruction and User Prompt
@@ -1566,7 +1306,7 @@ ${originalContent}
                 - Property Type: ${data.propertyType}
                 - Developer: ${data.developerName || 'Not specified'}
                 - Highlight Location: ${data.highlightLocation || 'Not specified'}
-                - Size/Rooms: ${data.sizeRooms || 'Not specified'}
+                - - Size/Rooms: ${data.sizeRooms || 'Not specified'}
                 - Facilities/Features: ${data.facilities || 'Not specified'}
                 - Price Information: ${data.priceInfo || 'Not specified'}
                 - Selling Point (Highlight): ${data.sellingPoint || 'Not specified'}
@@ -1592,15 +1332,11 @@ ${originalContent}
                 };
 
 
-
-
                 const options = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload_)
                 };
-
-
 
 
                 // 5. Call API
@@ -1611,6 +1347,10 @@ ${originalContent}
                     const candidate = result.candidates?.[0];
 
 
+                    // Check if the API returned an error object before checking candidates
+                    if (result.error) {
+                        throw new Error(result.error.message || "API returned an unknown error.");
+                    }
 
 
                     if (candidate && candidate.content?.parts?.[0]?.text) {
@@ -1621,12 +1361,8 @@ ${originalContent}
                         enhancementBtns.forEach(btn => btn.disabled = false);
 
 
-
-
                         // Disable translated enhancement buttons initially
                         translatedEnhancementBtns.forEach(btn => btn.disabled = true);
-
-
 
 
                         // Extract Grounding Sources
@@ -1648,8 +1384,6 @@ ${originalContent}
                                 .filter(source => source.uri && source.title);
 
 
-
-
                             if (sources.length > 0) {
                                 sourcesArea.classList.remove('hidden');
                                 sources.forEach(source => {
@@ -1667,15 +1401,11 @@ ${originalContent}
                         }
 
 
-
-
                     } else {
                         generatedContent.textContent = 'Error generating content. AI could not produce content.';
                         enhancementBtns.forEach(btn => btn.disabled = true);
                         translatedEnhancementBtns.forEach(btn => btn.disabled = true);
                     }
-
-
 
 
                 } catch (error) {
@@ -1691,8 +1421,6 @@ ${originalContent}
                     regenerateContentBtn.disabled = false;
                 }
             }
-
-
 
 
         </script>
