@@ -241,7 +241,16 @@
                 </div>
             </div>
             
-            <!-- Property Type Button Group (Now in its own full-width row after Project Name/Developer) -->
+            <!-- START: NEW DRAFT TEXT BOX -->
+            <div class="pt-4">
+                <!-- REMOVED BURMESE TEXT from label -->
+                <label for="draftContent" class="block text-sm font-medium mb-2">Draft</label>
+                <textarea id="draftContent" name="draftContent" class="input-field w-full h-32 resize-none" 
+                    placeholder="Enter key points or specific requirements you want the AI to include in the ad copy. (e.g., Offer: Free furniture upon immediate purchase.)"></textarea>
+            </div>
+            <!-- END: NEW DRAFT TEXT BOX -->
+
+            <!-- Property Type Button Group (Now below Draft) -->
             <div class="button-group pt-2">
                 <label class="block text-sm font-medium mb-2">Property Type</label>
                 <div class="grid grid-cols-3 md:grid-cols-5 gap-3 text-sm"> <!-- Increased gap for visual clarity -->
@@ -1264,6 +1273,9 @@ ${originalContent}
                 data.conditional = document.querySelector('input[name="conditional"]:checked')?.value;
                 data.outputLevel = document.querySelector('input[name="outputLevel"]:checked')?.value;
 
+                // NEW: Get Draft Content
+                const draftContent = document.getElementById('draftContent').value.trim();
+
 
                 const wordLimit = WORD_LIMITS[data.outputLevel] || 400;
                 const includeEmoji = document.getElementById('toggle-emoji').checked;
@@ -1302,7 +1314,7 @@ ${originalContent}
 
                 
                 // CLEANED USER QUERY: Removed distracting Burmese headings and instructions.
-                const userQuery = `
+                let userQuery = `
                 GENERATE the advertisement content strictly in the **${data.languageOption} language** using the data below, adhering to the System Instructions provided for tone and length.
 
                 - Real Estate Name: ${data.realEstateName || 'Not specified'}
@@ -1318,6 +1330,12 @@ ${originalContent}
                 - Condition: ${data.conditional}
                 - Tone of Voice: ${data.toneOfVoice}
                 `;
+
+                // NEW: Inject Draft Content into the User Query
+                if (draftContent) {
+                    userQuery += `\n- Draft Content / Key Points to Include: ${draftContent}`;
+                    generatedContentSystemPrompt += " Pay close attention to the 'Draft Content / Key Points to Include' section in the user query, ensuring these critical pieces of information are seamlessly integrated into the final advertisement copy.";
+                }
                 
                 // 4. API Payload (already constructed)
                 const payload_ = {
